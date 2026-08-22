@@ -1,8 +1,9 @@
+
 /*
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -60,7 +61,7 @@ struct aiCamera;
 
 #ifndef ASSIMP_BUILD_NO_ASSBIN_IMPORTER
 
-namespace Assimp {
+namespace Assimp    {
 
 // ---------------------------------------------------------------------------------
 /** Importer class for 3D Studio r3 and r4 3DS files

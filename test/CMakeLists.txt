@@ -1,6 +1,6 @@
 # Open Asset Import Library (assimp)
 # ----------------------------------------------------------------------
-# Copyright (c) 2006-2026, assimp team
+# Copyright (c) 2006-2024, assimp team
 #
 # All rights reserved.
 #
@@ -59,10 +59,6 @@ endif()
 # Assimp library can be found, even if it is not installed system-wide yet.
 LINK_DIRECTORIES( ${Assimp_BINARY_DIR} ${AssetImporter_BINARY_DIR}/lib )
 
-SET(TOOLS
-    unit/Tools/TestTools.h
-)
-
 SET( COMMON
   unit/utSimd.cpp
   unit/utIOSystem.cpp
@@ -90,7 +86,6 @@ SET( COMMON
   unit/TestModelFactory.h
   unit/utTypes.cpp
   unit/utVersion.cpp
-  unit/Common/utParsingUtils.cpp
   unit/utProfiler.cpp
   unit/utSharedPPData.cpp
   unit/utStringUtils.cpp
@@ -147,24 +142,24 @@ SET( IMPORTERS
   unit/utBlendImportMaterials.cpp
   unit/utBlenderWork.cpp
   unit/utBVHImportExport.cpp
+  unit/utColladaExport.cpp
+  unit/utColladaImportExport.cpp
   unit/utCSMImportExport.cpp
   unit/utB3DImportExport.cpp
-  unit/utNDOImportExport.cpp
   #unit/utM3DImportExport.cpp
   unit/utMDCImportExport.cpp
   unit/utAssbinImportExport.cpp
+  unit/utUSDImport.cpp
   unit/ImportExport/utAssjsonImportExport.cpp
   unit/ImportExport/utCOBImportExport.cpp
   unit/ImportExport/utOgreImportExport.cpp
   unit/ImportExport/utQ3BSPFileImportExport.cpp
   unit/ImportExport/utOFFImportExport.cpp
-  unit/utOFFSecurity.cpp
   unit/ImportExport/utNFFImportExport.cpp
   unit/ImportExport/utXGLImportExport.cpp
   unit/ImportExport/utMD2Importer.cpp
   #unit/ImportExport/utMD3Importer.cpp
   unit/ImportExport/utMD5Importer.cpp
-  unit/ImportExport/utIQMImporter.cpp
   unit/ImportExport/utMDLImporter.cpp
   unit/ImportExport/MDL/MDLHL1TestFiles.h
   unit/ImportExport/MDL/utMDLImporter_HL1_ImportSettings.cpp
@@ -174,24 +169,6 @@ SET( IMPORTERS
   unit/ImportExport/Terragen/utTerragenImportExport.cpp
   unit/ImportExport/Pbrt/utPbrtImportExport.cpp
 )
-
-if(ASSIMP_BUILD_USD_IMPORTER)
-  list( APPEND IMPORTERS
-    unit/utUSDImport.cpp
-  )
-endif()
-
-if(ASSIMP_BUILD_COLLADA_EXPORTER)
-  list( APPEND IMPORTERS
-    unit/utColladaExport.cpp
-  )
-endif()
-
-if(ASSIMP_BUILD_COLLADA_IMPORTER)
-  list( APPEND IMPORTERS
-    unit/utColladaImportExport.cpp
-  )
-endif()
 
 SET( MATERIAL
   unit/utMaterialSystem.cpp
@@ -236,7 +213,6 @@ SOURCE_GROUP( UnitTests\\GeometryTools FILES ${Geometry} )
 SOURCE_GROUP( UnitTests\\ImportExport  FILES ${IMPORTERS} )
 SOURCE_GROUP( UnitTests\\Material      FILES ${MATERIAL} )
 SOURCE_GROUP( UnitTests\\Math          FILES ${MATH} )
-SOURCE_GROUP( UnitTests\\Tools         FILES ${TOOLS} )
 SOURCE_GROUP( UnitTests\\PostProcess   FILES ${POST_PROCESSES})
 
 add_executable( unit
@@ -245,12 +221,11 @@ add_executable( unit
     ../code/Common/Version.cpp
 	../code/Common/Base64.cpp
 	${COMMON}
-    ${Geometry}
+  ${Geometry}
 	${IMPORTERS}
 	${MATERIAL}
 	${MATH}
-    ${POST_PROCESSES}
-    ${TOOLS}
+  ${POST_PROCESSES}
 )
 
 if(ASSIMP_HUNTER_ENABLED)

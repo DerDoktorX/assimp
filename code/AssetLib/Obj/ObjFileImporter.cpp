@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -67,7 +67,7 @@ static constexpr aiImporterDesc desc = {
     "obj"
 };
 
-static constexpr unsigned int ObjMinSize = 16u;
+static const unsigned int ObjMinSize = 16;
 
 namespace Assimp {
 
@@ -163,7 +163,7 @@ void ObjFileImporter::InternReadFile(const std::string &file, aiScene *pScene, I
 // ------------------------------------------------------------------------------------------------
 //  Create the data from parsed obj-file
 void ObjFileImporter::CreateDataFromImport(const ObjFile::Model *pModel, aiScene *pScene) {
-    if (pModel == nullptr) {
+    if (nullptr == pModel) {
         return;
     }
 
@@ -178,6 +178,7 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model *pModel, aiScene
     }
 
     if (!pModel->mObjects.empty()) {
+
         unsigned int meshCount = 0;
         unsigned int childCount = 0;
 
@@ -257,7 +258,8 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model *pModel, aiScene
 aiNode *ObjFileImporter::createNodes(const ObjFile::Model *pModel, const ObjFile::Object *pObject,
         aiNode *pParent, aiScene *pScene,
         std::vector<std::unique_ptr<aiMesh>> &MeshArray) {
-    if (nullptr == pObject || pModel == nullptr) {
+    ai_assert(nullptr != pModel);
+    if (nullptr == pObject) {
         return nullptr;
     }
 
@@ -309,13 +311,16 @@ aiNode *ObjFileImporter::createNodes(const ObjFile::Model *pModel, const ObjFile
 // ------------------------------------------------------------------------------------------------
 //  Create topology data
 std::unique_ptr<aiMesh> ObjFileImporter::createTopology(const ObjFile::Model *pModel, const ObjFile::Object *pData, unsigned int meshIndex) {
-    if (nullptr == pData || pModel == nullptr) {
+    // Checking preconditions
+    ai_assert(nullptr != pModel);
+
+    if (nullptr == pData) {
         return nullptr;
     }
 
     // Create faces
     ObjFile::Mesh *pObjMesh = pModel->mMeshes[meshIndex];
-    if (pObjMesh == nullptr) {
+    if (!pObjMesh) {
         return nullptr;
     }
 
@@ -330,9 +335,6 @@ std::unique_ptr<aiMesh> ObjFileImporter::createTopology(const ObjFile::Model *pM
 
     for (size_t index = 0; index < pObjMesh->m_Faces.size(); index++) {
         const ObjFile::Face *inp = pObjMesh->m_Faces[index];
-        if (inp == nullptr) {
-            continue;
-        }
 
         if (inp->mPrimitiveType == aiPrimitiveType_LINE) {
             pMesh->mNumFaces += static_cast<unsigned int>(inp->m_vertices.size() - 1);
@@ -350,14 +352,14 @@ std::unique_ptr<aiMesh> ObjFileImporter::createTopology(const ObjFile::Model *pM
         }
     }
 
-    unsigned int uiIdxCount = 0u;
+    unsigned int uiIdxCount(0u);
     if (pMesh->mNumFaces > 0) {
         pMesh->mFaces = new aiFace[pMesh->mNumFaces];
         if (pObjMesh->m_uiMaterialIndex != ObjFile::Mesh::NoMaterial) {
             pMesh->mMaterialIndex = pObjMesh->m_uiMaterialIndex;
         }
 
-        unsigned int outIndex = 0u;
+        unsigned int outIndex(0);
 
         // Copy all data from all stored meshes
         for (auto &face : pObjMesh->m_Faces) {
@@ -401,14 +403,11 @@ void ObjFileImporter::createVertexArray(const ObjFile::Model *pModel,
         aiMesh *pMesh,
         unsigned int numIndices) {
     // Checking preconditions
-    if (pCurrentObject == nullptr || pModel == nullptr || pMesh == nullptr) {
-        return;
-    }
+    ai_assert(nullptr != pCurrentObject);
 
     // Break, if no faces are stored in object
-    if (pCurrentObject->m_Meshes.empty()) {
+    if (pCurrentObject->m_Meshes.empty())
         return;
-    }
 
     // Get current mesh
     ObjFile::Mesh *pObjMesh = pModel->mMeshes[uiMeshIndex];
@@ -587,12 +586,11 @@ void ObjFileImporter::createMaterials(const ObjFile::Model *pModel, aiScene *pSc
         it = pModel->mMaterialMap.find(pModel->mMaterialLib[matIndex]);
 
         // No material found, use the default material
-        if (pModel->mMaterialMap.end() == it) {
+        if (pModel->mMaterialMap.end() == it)
             continue;
-        }
 
         aiMaterial *mat = new aiMaterial;
-        ObjFile::Material *pCurrentMaterial = it->second;
+        ObjFile::Material *pCurrentMaterial = (*it).second;
         mat->AddProperty(&pCurrentMaterial->MaterialName, AI_MATKEY_NAME);
 
         // convert illumination model
@@ -779,11 +777,8 @@ void ObjFileImporter::createMaterials(const ObjFile::Model *pModel, aiScene *pSc
 //  Appends this node to the parent node
 void ObjFileImporter::appendChildToParentNode(aiNode *pParent, aiNode *pChild) {
     // Checking preconditions
-    if (pParent == nullptr || pChild == nullptr) {
-        ai_assert(nullptr != pParent);
-        ai_assert(nullptr != pChild);
-        return;
-    }
+    ai_assert(nullptr != pParent);
+    ai_assert(nullptr != pChild);
 
     // Assign parent to child
     pChild->mParent = pParent;

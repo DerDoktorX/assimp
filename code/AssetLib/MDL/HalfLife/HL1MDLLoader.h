@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -47,7 +47,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_HL1MDLLOADER_INCLUDED
 
 #include "HL1FileData.h"
-#include "HL1DataBuffer.h"
 #include "HL1ImportSettings.h"
 #include "UniqueNameGenerator.h"
 
@@ -75,7 +74,6 @@ public:
         aiScene *scene,
         IOSystem *io,
         const unsigned char *buffer,
-        size_t buffer_length,
         const std::string &file_path,
         const HL1ImportSettings &import_settings);
 
@@ -111,32 +109,10 @@ private:
 
     /** \brief Load a file and copy it's content to a buffer.
      * \param file_path The path to the file to be loaded.
-     * \param buffer A buffer to receive the data.
+     * \param buffer A pointer to a buffer to receive the data.
      */
     template <typename MDLFileHeader>
-    void load_file_into_buffer(const std::string &file_path, HL1DataBuffer &buffer);
-
-    /** \brief Get a pointer to the specified data type in texture buffer.
-     * \param offset Offset in bytes.
-     * \param elements Elements count.
-     */
-    template <typename DataType>
-    const DataType *get_texture_buffer_data(int offset, int elements);
-
-    /** \brief Get a pointer to the specified data type in animation buffer.
-     * \param animation Animation index.
-     * \param offset Offset in bytes.
-     * \param elements Elements count.
-     */
-    template <typename DataType>
-    const DataType *get_anim_buffer_data(int animation, int offset, int elements);
-
-    /** \brief Get a pointer to the specified data type in MDL buffer.
-     * \param offset Offset in bytes.
-     * \param elements Elements count.
-     */
-    template <typename DataType>
-    const DataType *get_buffer_data(int offset, int elements);
+    void load_file_into_buffer(const std::string &file_path, unsigned char *&buffer);
 
     /** \brief Read an MDL texture.
      * \param[in] ptexture A pointer to an MDL texture.
@@ -146,7 +122,7 @@ private:
      * \param[in,out] last_palette_color The last color from the image palette.
      */
     void read_texture(const Texture_HL1 *ptexture,
-            const uint8_t *data, const uint8_t *pal, aiTexture *pResult,
+            uint8_t *data, uint8_t *pal, aiTexture *pResult,
             aiColor3D &last_palette_color);
 
     /** \brief This method reads a compressed anim value.
@@ -156,7 +132,6 @@ private:
     * \param[in,out] value The decompressed anim value at \p frame.
     */
     void extract_anim_value(const AnimValue_HL1 *panimvalue,
-            const HL1DataBuffer &anim_buffer,
             int frame, float bone_scale, ai_real &value);
 
     /**
@@ -183,7 +158,7 @@ private:
     IOSystem *io_;
 
     /** Buffer from MDLLoader class. */
-    const HL1DataBuffer buffer_;
+    const unsigned char *buffer_;
 
     /** The full file path to the MDL file we are trying to load.
      * Used to locate other MDL files since MDL may store resources
@@ -201,13 +176,13 @@ private:
 
     /** External MDL animation headers.
      * One for each loaded animation file. */
-    std::vector<const SequenceHeader_HL1*> anim_headers_;
+    SequenceHeader_HL1 **anim_headers_;
 
     /** Texture file data. */
-    HL1DataBuffer texture_buffer_;
+    unsigned char *texture_buffer_;
 
     /** Animation files data. */
-    std::vector<HL1DataBuffer> anim_buffers_;
+    unsigned char **anim_buffers_;
 
     /** The number of sequence groups. */
     int num_sequence_groups_;
@@ -251,7 +226,7 @@ private:
 
 // ------------------------------------------------------------------------------------------------
 template <typename MDLFileHeader>
-void HL1MDLLoader::load_file_into_buffer(const std::string &file_path, HL1DataBuffer &buffer) {
+void HL1MDLLoader::load_file_into_buffer(const std::string &file_path, unsigned char *&buffer) {
     if (!io_->Exists(file_path))
         throw DeadlyImportError("Missing file ", DefaultIOSystem::fileName(file_path), ".");
 
@@ -266,30 +241,9 @@ void HL1MDLLoader::load_file_into_buffer(const std::string &file_path, HL1DataBu
         throw DeadlyImportError("MDL file is too small.");
     }
 
-    std::unique_ptr<unsigned char[]> data(new unsigned char[1 + file_size]);
-    file->Read(data.get(), 1, file_size);
-    data[file_size] = '\0';
-
-    buffer = HL1DataBuffer::owning(std::move(data), file_size);
-}
-
-template <typename DataType>
-const DataType *HL1MDLLoader::get_texture_buffer_data(int offset, int elements) {
-    return texture_buffer_.get_data<DataType>(offset, elements);
-}
-
-template <typename DataType>
-const DataType *HL1MDLLoader::get_anim_buffer_data(int animation, int offset, int elements) {
-    if (animation < 0 || animation >= num_sequence_groups_) {
-        throw DeadlyImportError("MDL file contains invalid sequence group index (", animation, ")");
-    }
-
-    return anim_buffers_[animation].get_data<DataType>(offset, elements);
-}
-
-template <typename DataType>
-const DataType *HL1MDLLoader::get_buffer_data(int offset, int elements) {
-    return buffer_.get_data<DataType>(offset, elements);
+    buffer = new unsigned char[1 + file_size];
+    file->Read((void *)buffer, 1, file_size);
+    buffer[file_size] = '\0';
 }
 
 } // namespace HalfLife

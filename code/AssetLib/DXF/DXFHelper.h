@@ -2,7 +2,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
+
 
 All rights reserved.
 
@@ -53,14 +54,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <assimp/DefaultLogger.hpp>
 
-namespace Assimp::DXF {
+namespace Assimp {
+namespace DXF {
 
 // read pairs of lines, parse group code and value and provide utilities
 // to convert the data to the target data type.
 // do NOT skip empty lines. In DXF files, they count as valid data.
 class LineReader {
 public:
-    explicit LineReader(StreamReaderLE& reader) : splitter(reader,false,true), groupcode( 0 ), end() {
+    LineReader(StreamReaderLE& reader)
+    : splitter(reader,false,true)
+    , groupcode( 0 )
+    , end() {
         // empty
     }
 
@@ -100,7 +105,7 @@ public:
     }
 
     // -----------------------------------------
-    ai_real ValueAsFloat() const {
+    float ValueAsFloat() const {
         return fast_atof(value.c_str());
     }
 
@@ -160,7 +165,8 @@ private:
 
 // represents a POLYLINE or a LWPOLYLINE. or even a 3DFACE The data is converted as needed.
 struct PolyLine {
-    PolyLine() : flags() {
+    PolyLine()
+    : flags() {
         // empty
     }
 
@@ -176,7 +182,10 @@ struct PolyLine {
 
 // reference to a BLOCK. Specifies its own coordinate system.
 struct InsertBlock {
-    InsertBlock() : pos(0.f, 0.f, 0.f), scale(1.f,1.f,1.f), angle(0.0f) {
+    InsertBlock()
+    : pos()
+    , scale(1.f,1.f,1.f)
+    , angle() {
         // empty
     }
 
@@ -189,7 +198,8 @@ struct InsertBlock {
 
 
 // keeps track of all geometry in a single BLOCK.
-struct Block {
+struct Block
+{
     std::vector< std::shared_ptr<PolyLine> > lines;
     std::vector<InsertBlock> insertions;
 
@@ -197,11 +207,14 @@ struct Block {
     aiVector3D base;
 };
 
-struct FileData {
+
+struct FileData
+{
     // note: the LAST block always contains the stuff from ENTITIES.
     std::vector<Block> blocks;
 };
 
-} // namespace Assimp::DXF
+}
+} // Namespace Assimp
 
-#endif // INCLUDED_DXFHELPER_H
+#endif

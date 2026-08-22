@@ -2,7 +2,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
+
 
 All rights reserved.
 
@@ -101,10 +102,10 @@ protected:
     void InternReadFile( const std::string &file, aiScene *pScene, IOSystem *pIOHandler ) override;
 
     /// BaseImporter override.
-    const aiImporterDesc *GetInfo() const override;
+    virtual const aiImporterDesc *GetInfo() const override;
 
     /// BaseImporter override.
-    void SetupProperties( const Importer *pImp ) override;
+    virtual void SetupProperties( const Importer *pImp ) override;
 
     void handleNodes( ODDLParser::DDLNode *node, aiScene *pScene );
     void handleMetricNode( ODDLParser::DDLNode *node, aiScene *pScene );

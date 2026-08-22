@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -1406,13 +1406,10 @@ void Parser::ParseLV4MeshBonesVertices(unsigned int iNumVertices, ASE::Mesh &mes
             if (TokenMatch(mFilePtr, "MESH_BONE_VERTEX", 16)) {
                 // read the vertex index
                 unsigned int iIndex = strtoul10(mFilePtr, &mFilePtr);
-                if (mesh.mBoneVertices.empty()) {
-                    SkipSection();
-                }
-                if (iIndex >= mesh.mBoneVertices.size() ) {
+                if (iIndex >= mesh.mPositions.size()) {
+                    iIndex = (unsigned int)mesh.mPositions.size() - 1;
                     LogWarning("Bone vertex index is out of bounds. Using the largest valid "
                                "bone vertex index instead");
-                    iIndex = (unsigned int)mesh.mBoneVertices.size() - 1;
                 }
 
                 // --- ignored
@@ -1427,7 +1424,7 @@ void Parser::ParseLV4MeshBonesVertices(unsigned int iNumVertices, ASE::Mesh &mes
 
                     // then parse the vertex weight
                     if (!SkipSpaces(&mFilePtr, mEnd)) break;
-                    mFilePtr = fast_atoreal_move(mFilePtr, pairOut.second);
+                    mFilePtr = fast_atoreal_move<float>(mFilePtr, pairOut.second);
 
                     // -1 marks unused entries
                     if (-1 != pairOut.first) {
@@ -1893,7 +1890,7 @@ void Parser::ParseLV4MeshReal(ai_real &fOut) {
         return;
     }
     // parse the first float
-    mFilePtr = fast_atoreal_move(mFilePtr, fOut);
+    mFilePtr = fast_atoreal_move<ai_real>(mFilePtr, fOut);
 }
 // ------------------------------------------------------------------------------------------------
 void Parser::ParseLV4MeshFloat(float &fOut) {
@@ -1906,7 +1903,7 @@ void Parser::ParseLV4MeshFloat(float &fOut) {
         return;
     }
     // parse the first float
-    mFilePtr = fast_atoreal_move(mFilePtr, fOut);
+    mFilePtr = fast_atoreal_move<float>(mFilePtr, fOut);
 }
 // ------------------------------------------------------------------------------------------------
 void Parser::ParseLV4MeshLong(unsigned int &iOut) {

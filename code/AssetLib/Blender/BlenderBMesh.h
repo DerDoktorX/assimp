@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 All rights reserved.
 
 Redistribution and use of this software in source and binary forms,
@@ -63,12 +63,14 @@ namespace Assimp
         struct MLoop;
     }
 
-    class BlenderBMeshConverter final : public LogFunctions< BlenderBMeshConverter >
+    class BlenderBMeshConverter: public LogFunctions< BlenderBMeshConverter >
     {
     public:
-        explicit BlenderBMeshConverter( const Blender::Mesh* mesh );
-        ~BlenderBMeshConverter();
-        bool ContainsBMesh() const;
+        BlenderBMeshConverter( const Blender::Mesh* mesh );
+        ~BlenderBMeshConverter( );
+
+        bool ContainsBMesh( ) const;
+
         const Blender::Mesh* TriangulateBMesh( );
 
     private:

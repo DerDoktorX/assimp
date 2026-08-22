@@ -31,8 +31,9 @@ TOOLCHAIN=$XCODE_ROOT_DIR/Toolchains/XcodeDefault.xctoolchain
 CMAKE_C_COMPILER=$(xcrun -find cc)
 CMAKE_CXX_COMPILER=$(xcrun -find c++)
 
-BUILD_ARCHS_DEVICE="arm64e arm64"
-BUILD_ARCHS_SIMULATOR="arm64-simulator x86_64-simulator"
+BUILD_ARCHS_DEVICE="arm64e arm64 armv7s armv7"
+BUILD_ARCHS_SIMULATOR="x86_64 i386"
+BUILD_ARCHS_ALL=($BUILD_ARCHS_DEVICE $BUILD_ARCHS_SIMULATOR)
 
 CPP_DEV_TARGET_LIST=(miphoneos-version-min mios-simulator-version-min)
 CPP_DEV_TARGET=
@@ -45,83 +46,61 @@ function join { local IFS="$1"; shift; echo "$*"; }
 
 build_arch()
 {
-    ARCH=$1
-    if [[ "$ARCH" == *"-simulator" ]]; then
+    IOS_SDK_DEVICE=iPhoneOS
+    CPP_DEV_TARGET=${CPP_DEV_TARGET_LIST[0]}
+
+    if [[ "$BUILD_ARCHS_SIMULATOR" =~ "$1" ]]
+    then
         echo '[!] Target SDK set to SIMULATOR.'
-        IOS_SDK_DEVICE="iphonesimulator" # Use lowercase matching xcrun naming
-        BUILD_ARCH="${ARCH%-simulator}"  # Remove "-simulator" from architecture name
-        OUTPUT_FOLDER="$BUILD_DIR/ios-$ARCH"
-        MIN_VERSION_FLAG="-mios-simulator-version-min=$IOS_SDK_TARGET"
+        IOS_SDK_DEVICE=iPhoneSimulator
+        CPP_DEV_TARGET=${CPP_DEV_TARGET_LIST[1]}
     else
         echo '[!] Target SDK set to DEVICE.'
-        IOS_SDK_DEVICE="iphoneos" # For device builds
-        BUILD_ARCH="$ARCH"
-        OUTPUT_FOLDER="$BUILD_DIR/ios-$ARCH"
-        MIN_VERSION_FLAG="-miphoneos-version-min=$IOS_SDK_TARGET"
     fi
 
     unset DEVROOT SDKROOT CFLAGS LDFLAGS CPPFLAGS CXXFLAGS CMAKE_CLI_INPUT
-
-    # Use xcrun with the correct SDK to find clang
-    export CC="$(xcrun -sdk $IOS_SDK_DEVICE -find clang)"
+           
+    export CC="$(xcrun -sdk iphoneos -find clang)"
     export CPP="$CC -E"
-
-    # Derive correct platform directory names
-    # Note: iPhoneOS.platform and iPhoneSimulator.platform are used by Xcode internally.
-    if [[ "$IOS_SDK_DEVICE" == "iphonesimulator" ]]; then
-        PLATFORM_NAME="iPhoneSimulator"
-    else
-        PLATFORM_NAME="iPhoneOS"
-    fi
-
-    export DEVROOT="$XCODE_ROOT_DIR/Platforms/$PLATFORM_NAME.platform/Developer"
-    export SDKROOT="$DEVROOT/SDKs/$PLATFORM_NAME$IOS_SDK_VERSION.sdk"
-
-    # Set flags. For simulator builds, we use -mios-simulator-version-min; for device, -miphoneos-version-min.
-    export CFLAGS="-arch $BUILD_ARCH -pipe -no-cpp-precomp -isysroot $SDKROOT -I$SDKROOT/usr/include/ $MIN_VERSION_FLAG"
+    export DEVROOT=$XCODE_ROOT_DIR/Platforms/$IOS_SDK_DEVICE.platform/Developer
+    export SDKROOT=$DEVROOT/SDKs/$IOS_SDK_DEVICE$IOS_SDK_VERSION.sdk
+    export CFLAGS="-arch $1 -pipe -no-cpp-precomp -isysroot $SDKROOT -I$SDKROOT/usr/include/ -miphoneos-version-min=$IOS_SDK_TARGET"
     if [[ "$BUILD_TYPE" =~ "Debug" ]]; then
-        export CFLAGS="$CFLAGS -Og"
+      export CFLAGS="$CFLAGS -Og"
     else
-        export CFLAGS="$CFLAGS -O3"
+	     export CFLAGS="$CFLAGS -O3"
     fi
-    export LDFLAGS="-arch $BUILD_ARCH -isysroot $SDKROOT -L$SDKROOT/usr/lib/"
+    export LDFLAGS="-arch $1 -isysroot $SDKROOT -L$SDKROOT/usr/lib/"
     export CPPFLAGS="$CFLAGS"
     export CXXFLAGS="$CFLAGS -std=$CPP_STD"
 
-    rm -f CMakeCache.txt
-
-    # Construct the CMake toolchain file path
-    # Make sure these toolchain files differentiate between device and simulator builds properly.
-    TOOLCHAIN_FILE="./port/iOS/${PLATFORM_NAME}_$(echo "$BUILD_ARCH" | tr '[:lower:]' '[:upper:]')_TOOLCHAIN.cmake"
-
-    CMAKE_CLI_INPUT="-DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER \
-    -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN_FILE \
-    -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-    -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS \
-    -DASSIMP_BUILD_ZLIB=ON"
-
+    rm CMakeCache.txt
+    
+    CMAKE_CLI_INPUT="-DCMAKE_C_COMPILER=$CMAKE_C_COMPILER -DCMAKE_CXX_COMPILER=$CMAKE_CXX_COMPILER -DCMAKE_TOOLCHAIN_FILE=./port/iOS/IPHONEOS_$(echo $1 | tr '[:lower:]' '[:upper:]')_TOOLCHAIN.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_SHARED_LIBS=$BUILD_SHARED_LIBS -DASSIMP_BUILD_ZLIB=ON"
+    
     echo "[!] Running CMake with -G 'Unix Makefiles' $CMAKE_CLI_INPUT"
+    
     cmake -G 'Unix Makefiles' ${CMAKE_CLI_INPUT}
 
-    echo "[!] Building $ARCH library"
+    echo "[!] Building $1 library"
+
     xcrun -run make clean
-    xcrun -run make assimp -j 8 -l
-
-    mkdir -p $OUTPUT_FOLDER
-
+    xcrun -run make assimp -j 8 -l    
+    
     if [[ "$BUILD_SHARED_LIBS" =~ "ON" ]]; then
-        echo "[!] Moving built dynamic libraries into: $OUTPUT_FOLDER"
-        mv ./lib/*.dylib $OUTPUT_FOLDER/
+    	echo "[!] Moving built dynamic libraries into: $BUILD_DIR/$1/"
+    	mv ./lib/*.dylib  $BUILD_DIR/$1/
     fi
-
-    echo "[!] Moving built static libraries into: $OUTPUT_FOLDER"
-    mv ./lib/*.a $OUTPUT_FOLDER/
+    
+    echo "[!] Moving built static libraries into: $BUILD_DIR/$1/"
+    mv ./lib/*.a $BUILD_DIR/$1/	   
 }
 
 echo "[!] $0 - assimp iOS build script"
 
 CPP_STD_LIB=${CPP_STD_LIB_LIST[0]}
 CPP_STD=${CPP_STD_LIST[0]}
+DEPLOY_ARCHS=${BUILD_ARCHS_ALL[*]}
 DEPLOY_FAT=1
 DEPLOY_XCFramework=1
 
@@ -179,15 +158,14 @@ done
 cd ../../
 rm -rf $BUILD_DIR
 
-for ARCH in $BUILD_ARCHS_DEVICE; do
-    echo "Building for DEVICE arch: $ARCH"
-    build_arch $ARCH
+for ARCH_TARGET in $DEPLOY_ARCHS; do
+    echo "Creating folder: $BUILD_DIR/$ARCH_TARGET"
+    mkdir -p $BUILD_DIR/$ARCH_TARGET
+    echo "Building for arc: $ARCH_TARGET" 
+    build_arch $ARCH_TARGET
+    #rm ./lib/libassimp.a
 done
 
-for ARCH in $BUILD_ARCHS_SIMULATOR; do
-    echo "Building for SIMULATOR arch: $ARCH"
-    build_arch $ARCH
-done
 
 make_fat_static_or_shared_binary()
 {
@@ -231,63 +209,21 @@ if [[ "$DEPLOY_FAT" -eq 1 ]]; then
     echo "[!] Done! The fat binaries can be found at $BUILD_DIR"
 fi
 
-make_xcframework() {
+make_xcframework()
+{
     LIB_NAME=$1
-    FRAMEWORK_PATH="$BUILD_DIR/$LIB_NAME.xcframework"
+    FRAMEWORK_PATH=$BUILD_DIR/$LIB_NAME.xcframework   
 
-    # Paths to device and simulator libraries
-    DEVICE_LIB_PATH="$BUILD_DIR/ios-arm64/libassimp.a"
-    ARM64_SIM_LIB_PATH="$BUILD_DIR/ios-arm64-simulator/libassimp.a"
-    X86_64_SIM_LIB_PATH="$BUILD_DIR/ios-x86_64-simulator/libassimp.a"
-    UNIVERSAL_SIM_LIB_PATH="$BUILD_DIR/ios-simulator/libassimp.a"
+    ARGS = ""
+    for ARCH_TARGET in $DEPLOY_ARCHS; do
+        if [[ "$BUILD_SHARED_LIBS" =~ "ON" ]]; then
+            ARGS="$ARGS -library $BUILD_DIR/$ARCH_TARGET/$LIB_NAME.dylib -headers ./include "
+        else
+            ARGS="$ARGS -library $BUILD_DIR/$ARCH_TARGET/$LIB_NAME.a -headers ./include "
+        fi
+    done
 
-    # Ensure we have a clean location for the universal simulator lib
-    mkdir -p "$BUILD_DIR/ios-simulator"
-
-    # Combine simulator libraries if both arm64 and x86_64 simulator slices are present
-    if [[ -f "$ARM64_SIM_LIB_PATH" && -f "$X86_64_SIM_LIB_PATH" ]]; then
-        echo "[+] Combining arm64 and x86_64 simulator libs into a universal simulator library..."
-        lipo -create "$ARM64_SIM_LIB_PATH" "$X86_64_SIM_LIB_PATH" -output "$UNIVERSAL_SIM_LIB_PATH" || {
-            echo "[ERROR] lipo failed to combine simulator libraries."
-            exit 1
-        }
-        SIM_LIB_PATH="$UNIVERSAL_SIM_LIB_PATH"
-    elif [[ -f "$ARM64_SIM_LIB_PATH" ]]; then
-        echo "[!] Only arm64 simulator library found. Using it as is."
-        SIM_LIB_PATH="$ARM64_SIM_LIB_PATH"
-    elif [[ -f "$X86_64_SIM_LIB_PATH" ]]; then
-        echo "[!] Only x86_64 simulator library found. Using it as is."
-        SIM_LIB_PATH="$X86_64_SIM_LIB_PATH"
-    else
-        SIM_LIB_PATH=""
-    fi
-
-    ARGS=""
-
-    # Device library
-    if [[ -f "$DEVICE_LIB_PATH" ]]; then
-        echo "[DEBUG] Adding library $DEVICE_LIB_PATH for device arm64"
-        ARGS="$ARGS -library $DEVICE_LIB_PATH -headers ./include"
-    else
-        echo "[WARNING] Device library not found: $DEVICE_LIB_PATH"
-    fi
-
-    # Simulator library (could be universal or a single-arch one)
-    if [[ -n "$SIM_LIB_PATH" && -f "$SIM_LIB_PATH" ]]; then
-        echo "[DEBUG] Adding library $SIM_LIB_PATH for simulator"
-        ARGS="$ARGS -library $SIM_LIB_PATH -headers ./include"
-    fi
-
-    if [[ -z "$ARGS" ]]; then
-        echo "[ERROR] No valid libraries found to create XCFramework."
-        exit 1
-    fi
-
-    # Create XCFramework
-    echo "[+] Creating XCFramework ..."
     xcodebuild -create-xcframework $ARGS -output $FRAMEWORK_PATH
-
-    echo "[!] Done! The XCFramework can be found at $FRAMEWORK_PATH"
 }
 
 if [[ "$DEPLOY_XCFramework" -eq 1 ]]; then

@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -86,23 +86,6 @@ inline Char_T getNextWord(Char_T pBuffer, Char_T pEnd) {
 }
 
 /**
- *  @brief  Returns next space
- *  @param[in] pBuffer  Pointer to data buffer
- *  @param[in] pEnd     Pointer to end of buffer
- *  @return Pointer to next space
- */
-template <class Char_T>
-inline Char_T getNextDelimiter(Char_T pBuffer, Char_T pEnd) {
-    while (!isEndOfBuffer(pBuffer, pEnd)) {
-        if (IsSpaceOrNewLine(*pBuffer)) {
-            break;
-        }
-        ++pBuffer;
-    }
-    return pBuffer;
-}
-
-/**
  *  @brief  Returns pointer a next token
  *  @param[in] pBuffer  Pointer to data buffer
  *  @param[in] pEnd     Pointer to end of buffer
@@ -110,7 +93,12 @@ inline Char_T getNextDelimiter(Char_T pBuffer, Char_T pEnd) {
  */
 template <class Char_T>
 inline Char_T getNextToken(Char_T pBuffer, Char_T pEnd) {
-    pBuffer = getNextDelimiter(pBuffer, pEnd);
+    while (!isEndOfBuffer(pBuffer, pEnd)) {
+        if (IsSpaceOrNewLine(*pBuffer)) {
+            break;
+        }
+        ++pBuffer;
+    }
     return getNextWord(pBuffer, pEnd);
 }
 

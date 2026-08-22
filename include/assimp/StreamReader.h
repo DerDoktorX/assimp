@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -59,17 +59,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Assimp {
 
 // --------------------------------------------------------------------------------------------
-/**
- * @brief  Wrapper class around IOStream to allow for consistent reading of binary data in both
- *         little and big endian format.
+/** Wrapper class around IOStream to allow for consistent reading of binary data in both
+ *  little and big endian format. Don't attempt to instance the template directly. Use
+ *  StreamReaderLE to read from a little-endian stream and StreamReaderBE to read from a
+ *  BE stream. The class expects that the endianness of any input data is known at
+ *  compile-time, which should usually be true (#BaseImporter::ConvertToUTF8 implements
+ *  runtime endianness conversions for text files).
  *
- * Don't attempt to instance the template directly. Use StreamReaderLE to read from a
- * little-endian stream and StreamReaderBE to read from a BE stream. The class expects that
- * the endianness of any input data is known at compile-time, which should usually be true
- * (#BaseImporter::ConvertToUTF8 implements runtime endianness conversions for text files).
- *
- *  XXX switch from unsigned int for size types to size_t? or ptrdiff_t?
- */
+ *  XXX switch from unsigned int for size types to size_t? or ptrdiff_t?*/
 // --------------------------------------------------------------------------------------------
 template <bool SwapEndianness = false, bool RuntimeSwitch = false>
 class StreamReader {
@@ -182,7 +179,7 @@ public:
     // ---------------------------------------------------------------------
     /// Get the remaining stream size (to the end of the stream)
     size_t GetRemainingSize() const {
-        return static_cast<size_t>(mEnd - mCurrent);
+        return (unsigned int)(mEnd - mCurrent);
     }
 
     // ---------------------------------------------------------------------
@@ -190,29 +187,16 @@ public:
      *  return value is the remaining size of the stream if no custom
      *  read limit has been set. */
     size_t GetRemainingSizeToLimit() const {
-        return static_cast<size_t>(mLimit - mCurrent);
+        return (unsigned int)(mLimit - mCurrent);
     }
 
     // ---------------------------------------------------------------------
     /** Increase the file pointer (relative seeking)  */
     void IncPtr(intptr_t plus) {
-        // Ensure internal pointer invariants hold
-        if (mCurrent < mBuffer || mCurrent > mLimit) {
-            throw DeadlyImportError("StreamReader: Invalid internal pointer state");
-        }
-
-        if (plus < 0) {
-            const size_t absPlus = static_cast<size_t>(-(plus + 1)) + 1;
-            if (absPlus > static_cast<size_t>(mCurrent - mBuffer)) {
-                throw DeadlyImportError("StreamReader: Attempted to seek outside buffer bounds");
-            }
-        } else if (plus > 0) {
-            if (static_cast<size_t>(plus) > static_cast<size_t>(mLimit - mCurrent)) {
-                throw DeadlyImportError("StreamReader: Attempted to seek outside buffer bounds");
-            }
-        }
-
         mCurrent += plus;
+        if (mCurrent > mLimit) {
+            throw DeadlyImportError("End of file or read limit was reached");
+        }
     }
 
     // ---------------------------------------------------------------------
@@ -246,9 +230,8 @@ public:
     }
 
     /// @brief Get the current offset from the beginning of the file
-    /// @return The current offset from the beginning of the file.
     int GetCurrentPos() const {
-        return static_cast<int>(mCurrent - mBuffer);
+        return (unsigned int)(mCurrent - mBuffer);
     }
 
     void SetCurrentPos(size_t pos) {
@@ -258,10 +241,10 @@ public:
     // ---------------------------------------------------------------------
     /** Setup a temporary read limit
      *
-     *  @param _limit Maximum number of bytes to be read from
+     *  @param limit Maximum number of bytes to be read from
      *    the beginning of the file. Specifying UINT_MAX
      *    resets the limit to the original end of the stream.
-     *  @return The previously set limit. */
+     *  Returns the previously set limit. */
     unsigned int SetReadLimit(unsigned int _limit) {
         unsigned int prev = GetReadLimit();
         if (UINT_MAX == _limit) {
@@ -278,10 +261,9 @@ public:
 
     // ---------------------------------------------------------------------
     /** Get the current read limit in bytes. Reading over this limit
-     *  accidentally raises an exception.
-     *  @return The current limit. */
+     *  accidentally raises an exception.  */
     unsigned int GetReadLimit() const {
-        return static_cast<unsigned int>(mLimit - mBuffer);
+        return (unsigned int)(mLimit - mBuffer);
     }
 
     // ---------------------------------------------------------------------

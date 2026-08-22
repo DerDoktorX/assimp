@@ -13,9 +13,6 @@
 # the License.
 
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
-if(DRACO_TRANSCODER_SUPPORTED)
-  set(CMAKE_CXX_STANDARD 17)
-endif()
 project(draco C CXX)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -24,7 +21,7 @@ endif()
 
 set(draco_root "${CMAKE_CURRENT_SOURCE_DIR}")
 set(draco_src_root "${draco_root}/src/draco")
-set(draco_build "${CMAKE_BINARY_DIR}")
+set(draco_build "${Assimp_BINARY_DIR}")
 
 if("${draco_root}" STREQUAL "${draco_build}")
   message(
@@ -482,14 +479,10 @@ list(
          "${draco_src_root}/metadata/geometry_metadata.h"
          "${draco_src_root}/metadata/metadata.cc"
          "${draco_src_root}/metadata/metadata.h"
-         "${draco_src_root}/metadata/property_attribute.cc"
-         "${draco_src_root}/metadata/property_attribute.h"
          "${draco_src_root}/metadata/property_table.cc"
          "${draco_src_root}/metadata/property_table.h"
          "${draco_src_root}/metadata/structural_metadata.cc"
-         "${draco_src_root}/metadata/structural_metadata.h"
-         "${draco_src_root}/metadata/structural_metadata_schema.cc"
-         "${draco_src_root}/metadata/structural_metadata_schema.h")
+         "${draco_src_root}/metadata/structural_metadata.h")
 
 list(APPEND draco_metadata_enc_sources
             "${draco_src_root}/metadata/metadata_encoder.cc"

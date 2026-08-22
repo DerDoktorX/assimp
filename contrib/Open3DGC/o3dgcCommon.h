@@ -166,6 +166,7 @@ namespace o3dgc
                                     {
                                         memset(this, 0, sizeof(SC3DMCStats));
                                     };
+                                    ~SC3DMCStats(void){};
         
         double                      m_timeCoord;
         double                      m_timeNormal;
@@ -408,3 +409,4 @@ namespace o3dgc
     }
 }
 #endif // O3DGC_COMMON_H
+

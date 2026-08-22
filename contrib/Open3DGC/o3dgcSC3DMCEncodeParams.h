@@ -51,6 +51,8 @@ namespace o3dgc
                                             m_intAttributePredMode[a] = O3DGC_SC3DMC_NO_PREDICTION;
                                         }
                                     };
+        //! Destructor.
+                                    ~SC3DMCEncodeParams(void) {};
 
         O3DGCStreamType             GetStreamType()    const { return m_streamTypeMode;}
         O3DGCSC3DMCEncodingMode     GetEncodeMode()    const { return m_encodeMode;}
@@ -135,3 +137,4 @@ namespace o3dgc
     };
 }
 #endif // O3DGC_SC3DMC_ENCODE_PARAMS_H
+

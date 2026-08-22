@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -63,10 +63,10 @@ namespace Assimp {
  *  @brief  Helper class to export a given scene to a 3DS file.
  */
 // ------------------------------------------------------------------------------------------------
-class Discreet3DSExporter final {
+class Discreet3DSExporter {
 public:
     Discreet3DSExporter(std::shared_ptr<IOStream> &outfile, const aiScene* pScene);
-    ~Discreet3DSExporter() = default;
+    ~Discreet3DSExporter();
 
 private:
     void WriteMeshes();
@@ -88,6 +88,7 @@ private:
 
     using MeshesByNodeMap = std::multimap<const aiNode*, unsigned int>;
     MeshesByNodeMap meshes;
+
 };
 
 } // Namespace Assimp

@@ -3,7 +3,9 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
+
+
 
 All rights reserved.
 
@@ -47,14 +49,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace Assimp {
 
-class TestModelFactory {
+class TestModelFacttory {
 public:
-    TestModelFactory() = default;
+    TestModelFacttory() {
+        // empty
+    }
 
-    ~TestModelFactory() = default;
+    ~TestModelFacttory() {
+        // empty
+    }
 
     static aiScene *createDefaultTestModel( float &opacity ) {
-        auto *scene = new aiScene;
+        aiScene *scene( new aiScene );
         scene->mNumMaterials = 1;
         scene->mMaterials = new aiMaterial*[scene->mNumMaterials];
         scene->mMaterials[ 0 ] = new aiMaterial;
@@ -83,7 +89,7 @@ public:
         scene->mMeshes[ 0 ]->mFaces[ 0 ].mIndices[ 1 ] = 1;
         scene->mMeshes[ 0 ]->mFaces[ 0 ].mIndices[ 2 ] = 2;
 
-        scene->mRootNode = new aiNode;
+        scene->mRootNode = new aiNode();
         scene->mRootNode->mNumMeshes = 1;
         scene->mRootNode->mMeshes = new unsigned int[1]{ 0 };
 

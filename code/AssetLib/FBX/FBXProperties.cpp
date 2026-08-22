@@ -2,7 +2,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
+
 
 All rights reserved.
 
@@ -56,11 +57,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Assimp {
 namespace FBX {
 
-using namespace Util;
+    using namespace Util;
 
 // ------------------------------------------------------------------------------------------------
+    Property::Property() = default;
 
-namespace {
+    // ------------------------------------------------------------------------------------------------
+    Property::~Property() = default;
+
+    namespace {
 
     void checkTokenCount(const TokenList &tok, unsigned int expectedCount) {
         ai_assert(expectedCount >= 2);
@@ -141,9 +146,9 @@ Property* ReadTypedProperty(const Element& element)
 
 // ------------------------------------------------------------------------------------------------
 // peek into an element and check if it contains a FBX property, if so return its name.
-std::string PeekPropertyName(const Element& element) {
+std::string PeekPropertyName(const Element& element)
+{
     ai_assert(element.KeyToken().StringContents() == "P");
-
     const TokenList& tok = element.Tokens();
     if(tok.size() < 4) {
         return std::string();
@@ -154,6 +159,13 @@ std::string PeekPropertyName(const Element& element) {
 
 } //! anon
 
+
+// ------------------------------------------------------------------------------------------------
+PropertyTable::PropertyTable()
+: templateProps()
+, element()
+{
+}
 
 // ------------------------------------------------------------------------------------------------
 PropertyTable::PropertyTable(const Element &element, std::shared_ptr<const PropertyTable> templateProps) :

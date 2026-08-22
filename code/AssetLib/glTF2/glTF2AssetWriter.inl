@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -546,26 +546,6 @@ namespace glTF2 {
             }
         }
 
-        if (m.materialAnisotropy.isPresent) {
-            Value materialAnisotropy(rapidjson::Type::kObjectType);
-
-            MaterialAnisotropy &anisotropy = m.materialAnisotropy.value;
-
-            if (anisotropy.anisotropyStrength != 0.f) {
-                WriteFloat(materialAnisotropy, anisotropy.anisotropyStrength, "anisotropyStrength", w.mAl);
-            }
-
-            if (anisotropy.anisotropyRotation != 0.f) {
-                WriteFloat(materialAnisotropy, anisotropy.anisotropyRotation, "anisotropyRotation", w.mAl);
-            }
-
-            WriteTex(materialAnisotropy, anisotropy.anisotropyTexture, "anisotropyTexture", w.mAl);
-
-            if (!materialAnisotropy.ObjectEmpty()) {
-                exts.AddMember("KHR_materials_anisotropy", materialAnisotropy, w.mAl);
-            }
-        }
-
         if (!exts.ObjectEmpty()) {
             obj.AddMember("extensions", exts, w.mAl);
         }
@@ -628,7 +608,6 @@ namespace glTF2 {
                 {
                     WriteAttrs(w, attrs, p.attributes.position, "POSITION");
                     WriteAttrs(w, attrs, p.attributes.normal, "NORMAL");
-                    WriteAttrs(w, attrs, p.attributes.tangent, "TANGENT");
                     WriteAttrs(w, attrs, p.attributes.texcoord, "TEXCOORD", true);
                     WriteAttrs(w, attrs, p.attributes.color, "COLOR", true);
                     WriteAttrs(w, attrs, p.attributes.joint, "JOINTS", true);
@@ -710,7 +689,7 @@ namespace glTF2 {
         for (auto const &value : extras.mValues) {
             WriteExtrasValue(extrasNode, value, w);
         }
-
+        
         obj.AddMember("extras", extrasNode, w.mAl);
     }
 
@@ -1036,10 +1015,6 @@ namespace glTF2 {
 
             if (this->mAsset.extensionsUsed.KHR_materials_emissive_strength) {
                 exts.PushBack(StringRef("KHR_materials_emissive_strength"), mAl);
-            }
-
-            if (this->mAsset.extensionsUsed.KHR_materials_anisotropy) {
-                exts.PushBack(StringRef("KHR_materials_anisotropy"), mAl);
             }
 
             if (this->mAsset.extensionsUsed.FB_ngon_encoding) {

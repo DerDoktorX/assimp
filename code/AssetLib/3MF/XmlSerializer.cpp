@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -43,9 +43,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "3MFXmlTags.h"
 #include "3MFTypes.h"
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 
-#include <set>
 #include <utility>
 
 namespace Assimp {
@@ -122,7 +120,8 @@ aiMatrix4x4 parseTransformMatrix(const std::string& matrixStr) {
     for (char c : matrixStr) {
         if (c == ' ') {
             if (!currentNumber.empty()) {
-                numbers.push_back(ai_strtof(currentNumber.c_str(), nullptr));
+                float f = std::stof(currentNumber);
+                numbers.push_back(f);
                 currentNumber.clear();
             }
         } else {
@@ -130,14 +129,8 @@ aiMatrix4x4 parseTransformMatrix(const std::string& matrixStr) {
         }
     }
     if (!currentNumber.empty()) {
-        numbers.push_back(ai_strtof(currentNumber.c_str(), nullptr));
-    }
-
-    // A 3MF transform is a row-major 4x3 affine matrix (3MF Core 3.3); the implicit
-    // fourth column is (0,0,0,1). Anything shorter is malformed, so fall back to identity.
-    constexpr size_t AffineMatrixValueCount = 12;
-    if (numbers.size() < AffineMatrixValueCount) {
-        return aiMatrix4x4();
+        const float f = std::stof(currentNumber);
+        numbers.push_back(f);
     }
 
     aiMatrix4x4 transformMatrix;
@@ -206,27 +199,31 @@ void assignDiffuseColor(XmlNode &node, aiMaterial *mat) {
 
 } // namespace
 
-XmlSerializer::XmlSerializer(XmlParser &xmlParser, D3MFOpcPackage *package) :
-        mResourcesByFile(),
-        mCurrentResources(nullptr),
+XmlSerializer::XmlSerializer(XmlParser *xmlParser) :
+        mResourcesDictionnary(),
         mMeshCount(0),
-        mXmlParser(xmlParser),
-        mPackage(package) {
-    // empty
+        mXmlParser(xmlParser) {
+    ai_assert(nullptr != xmlParser);
 }
 
 XmlSerializer::~XmlSerializer() {
-    for (auto &file : mResourcesByFile) {
-        for (auto &it : file.second) {
-            delete it.second;
-        }
+    for (auto &it : mResourcesDictionnary) {
+        delete it.second;
     }
 }
 
-void XmlSerializer::ReadModel(XmlNode &modelNode, const std::string &fileKey) {
-    mCurrentResources = &mResourcesByFile[fileKey];
+void XmlSerializer::ImportXml(aiScene *scene) {
+    if (nullptr == scene) {
+        return;
+    }
 
-    XmlNode resNode = modelNode.child(XmlTag::resources);
+    scene->mRootNode = new aiNode(XmlTag::RootTag);
+    XmlNode node = mXmlParser->getRootNode().child(XmlTag::model);
+    if (node.empty()) {
+        return;
+    }
+
+    XmlNode resNode = node.child(XmlTag::resources);
     for (auto &currentNode : resNode.children()) {
         const std::string currentNodeName = currentNode.name();
         if (currentNodeName == XmlTag::texture_2d) {
@@ -243,110 +240,29 @@ void XmlSerializer::ReadModel(XmlNode &modelNode, const std::string &fileKey) {
             ReadColorGroup(currentNode);
         }
     }
-}
-
-void XmlSerializer::LoadModelFile(const std::string &path) {
-    if (path.empty() || nullptr == mPackage) {
-        return;
-    }
-    // Already loaded (e.g. the root file, or referenced from multiple places).
-    if (mResourcesByFile.find(path) != mResourcesByFile.end()) {
-        return;
-    }
-
-    IOStream *stream = mPackage->OpenPart(path);
-    if (nullptr == stream) {
-        ASSIMP_LOG_WARN("3MF: cannot open referenced model part: ", path);
-        return;
-    }
-
-    XmlParser parser;
-    if (parser.parse(stream)) {
-        XmlNode modelNode = parser.getRootNode().child(XmlTag::model);
-        if (!modelNode.empty()) {
-            // ReadObject copies all data into Object/aiMesh, so the parser may be
-            // discarded once the resources of this part have been read.
-            ReadModel(modelNode, path);
-        }
-    }
-    mPackage->CloseStream(stream);
-}
-
-void XmlSerializer::ImportXml(aiScene *scene) {
-    if (nullptr == scene) {
-        return;
-    }
-
-    scene->mRootNode = new aiNode(XmlTag::RootTag);
-    XmlNode node = mXmlParser.getRootNode().child(XmlTag::model);
-    if (node.empty()) {
-        return;
-    }
-
-    const std::string rootKey = (nullptr != mPackage) ? mPackage->RootPath() : std::string();
-    ReadModel(node, rootKey);
-
-    XmlNode buildNode = node.child(XmlTag::build);
-
-    // Production extension: build items and root-object components may reference objects
-    // in separate model parts via a path attribute. Load every referenced part now, before
-    // materials are copied into the scene, so material indices defined there stay valid.
-    std::set<std::string> referencedFiles;
-    if (!buildNode.empty()) {
-        for (auto &currentNode : buildNode.children()) {
-            if (std::string(currentNode.name()) == XmlTag::item) {
-                std::string path;
-                if (getNodeAttribute(currentNode, D3MF::XmlTag::p_path, path)) {
-                    referencedFiles.insert(D3MFOpcPackage::NormalizePath(path));
-                }
-            }
-        }
-    }
-    auto rootIt = mResourcesByFile.find(rootKey);
-    if (rootIt != mResourcesByFile.end()) {
-        for (auto &it : rootIt->second) {
-            if (it.second->getType() == ResourceType::RT_Object) {
-                Object *obj = static_cast<Object *>(it.second);
-                for (const Component &c : obj->mComponents) {
-                    if (!c.mPath.empty()) {
-                        referencedFiles.insert(c.mPath);
-                    }
-                }
-            }
-        }
-    }
-    for (const std::string &file : referencedFiles) {
-        LoadModelFile(file);
-    }
-
     StoreMaterialsInScene(scene);
+    XmlNode buildNode = node.child(XmlTag::build);
+    if (buildNode.empty()) {
+        return;
+    }
 
-    if (!buildNode.empty()) {
-        for (auto &currentNode : buildNode.children()) {
-            const std::string currentNodeName = currentNode.name();
-            if (currentNodeName == XmlTag::item) {
-                int objectId = IdNotSet;
-                std::string transformationMatrixStr;
-                std::string itemPath;
-                aiMatrix4x4 transformationMatrix;
-                getNodeAttribute(currentNode, D3MF::XmlTag::objectid, objectId);
-                bool hasTransform = getNodeAttribute(currentNode, D3MF::XmlTag::transform, transformationMatrixStr);
-                bool hasPath = getNodeAttribute(currentNode, D3MF::XmlTag::p_path, itemPath);
+    for (auto &currentNode : buildNode.children()) {
+        const std::string currentNodeName = currentNode.name();
+        if (currentNodeName == XmlTag::item) {
+            int objectId = IdNotSet;
+            std::string transformationMatrixStr;
+            aiMatrix4x4 transformationMatrix;
+            getNodeAttribute(currentNode, D3MF::XmlTag::objectid, objectId);
+            bool hasTransform = getNodeAttribute(currentNode, D3MF::XmlTag::transform, transformationMatrixStr);
 
-                const std::string fileKey = hasPath ? D3MFOpcPackage::NormalizePath(itemPath) : rootKey;
-                auto fileIt = mResourcesByFile.find(fileKey);
-                if (fileIt == mResourcesByFile.end()) {
-                    continue;
+            auto it = mResourcesDictionnary.find(objectId);
+            if (it != mResourcesDictionnary.end() && it->second->getType() == ResourceType::RT_Object) {
+                Object *obj = static_cast<Object *>(it->second);
+                if (hasTransform) {
+                    transformationMatrix = parseTransformMatrix(transformationMatrixStr);
                 }
-                auto it = fileIt->second.find(objectId);
-                if (it != fileIt->second.end() && it->second->getType() == ResourceType::RT_Object) {
-                    Object *obj = static_cast<Object *>(it->second);
-                    if (hasTransform) {
-                        transformationMatrix = parseTransformMatrix(transformationMatrixStr);
-                    }
 
-                    addObjectToNode(scene->mRootNode, obj, transformationMatrix, fileKey);
-                }
+                addObjectToNode(scene->mRootNode, obj, transformationMatrix);
             }
         }
     }
@@ -361,25 +277,23 @@ void XmlSerializer::ImportXml(aiScene *scene) {
         }
     }
 
-    // import the meshes from every model part, materials are already stored
+    // import the meshes, materials are already stored
     scene->mNumMeshes = static_cast<unsigned int>(mMeshCount);
     if (scene->mNumMeshes != 0) {
         scene->mMeshes = new aiMesh *[scene->mNumMeshes]();
-        for (auto &file : mResourcesByFile) {
-            for (auto &it : file.second) {
-                if (it.second->getType() == ResourceType::RT_Object) {
-                    Object *obj = static_cast<Object *>(it.second);
-                    ai_assert(nullptr != obj);
-                    for (unsigned int i = 0; i < obj->mMeshes.size(); ++i) {
-                        scene->mMeshes[obj->mMeshIndex[i]] = obj->mMeshes[i];
-                    }
+        for (auto &it : mResourcesDictionnary) {
+            if (it.second->getType() == ResourceType::RT_Object) {
+                Object *obj = static_cast<Object *>(it.second);
+                ai_assert(nullptr != obj);
+                for (unsigned int i = 0; i < obj->mMeshes.size(); ++i) {
+                    scene->mMeshes[obj->mMeshIndex[i]] = obj->mMeshes[i];
                 }
             }
         }
     }
 }
 
-void XmlSerializer::addObjectToNode(aiNode *parent, Object *obj, const aiMatrix4x4 &nodeTransform, const std::string &fileKey) {
+void XmlSerializer::addObjectToNode(aiNode *parent, Object *obj, aiMatrix4x4 nodeTransform) {
     ai_assert(nullptr != obj);
 
     aiNode *sceneNode = new aiNode(obj->mName);
@@ -392,17 +306,10 @@ void XmlSerializer::addObjectToNode(aiNode *parent, Object *obj, const aiMatrix4
         parent->addChildren(1, &sceneNode);
     }
 
-    for (const Assimp::D3MF::Component &c : obj->mComponents) {
-        // A component without a path references an object in the same model part;
-        // with a path (production extension, already normalized) it references another part.
-        const std::string &childKey = c.mPath.empty() ? fileKey : c.mPath;
-        auto fileIt = mResourcesByFile.find(childKey);
-        if (fileIt == mResourcesByFile.end()) {
-            continue;
-        }
-        auto it = fileIt->second.find(c.mObjectId);
-        if (it != fileIt->second.end() && it->second->getType() == ResourceType::RT_Object) {
-            addObjectToNode(sceneNode, static_cast<Object *>(it->second), c.mTransformation, childKey);
+    for (Assimp::D3MF::Component c : obj->mComponents) {
+        auto it = mResourcesDictionnary.find(c.mObjectId);
+        if (it != mResourcesDictionnary.end() && it->second->getType() == ResourceType::RT_Object) {
+            addObjectToNode(sceneNode, static_cast<Object *>(it->second), c.mTransformation);
         }
     }
 }
@@ -425,16 +332,13 @@ void XmlSerializer::ReadObject(XmlNode &node) {
             mesh->mName.Set(ai_to_string(id));
 
             if (hasPid) {
-                auto it = mCurrentResources->find(pid);
-                if (hasPindex && it != mCurrentResources->end()) {
+                auto it = mResourcesDictionnary.find(pid);
+                if (hasPindex && it != mResourcesDictionnary.end()) {
                     if (it->second->getType() == ResourceType::RT_BaseMaterials) {
                         BaseMaterials *materials = static_cast<BaseMaterials *>(it->second);
-                        if (pindex >= 0 && static_cast<size_t>(pindex) < materials->mMaterialIndex.size()) {
-                            mesh->mMaterialIndex = materials->mMaterialIndex[pindex];
-                        }
+                        mesh->mMaterialIndex = materials->mMaterialIndex[pindex];
                     } else if (it->second->getType() == ResourceType::RT_Texture2DGroup) {
                         Texture2DGroup *group = static_cast<Texture2DGroup *>(it->second);
-                        const bool pindexValid = pindex >= 0 && static_cast<size_t>(pindex) < group->mTex2dCoords.size();
                         if (mesh->mTextureCoords[0] == nullptr) {
                             mesh->mNumUVComponents[0] = 2;
                             for (unsigned int i = 1; i < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++i) {
@@ -449,13 +353,11 @@ void XmlSerializer::ReadObject(XmlNode &node) {
                             }
 
                             mesh->mTextureCoords[0] = new aiVector3D[mesh->mNumVertices];
-                            if (pindexValid) {
-                                for (unsigned int vertex_idx = 0; vertex_idx < mesh->mNumVertices; vertex_idx++) {
-                                    mesh->mTextureCoords[0][vertex_idx] =
-                                            aiVector3D(group->mTex2dCoords[pindex].x, group->mTex2dCoords[pindex].y, 0.0f);
-                                }
+                            for (unsigned int vertex_idx = 0; vertex_idx < mesh->mNumVertices; vertex_idx++) {
+                                mesh->mTextureCoords[0][vertex_idx] =
+                                        aiVector3D(group->mTex2dCoords[pindex].x, group->mTex2dCoords[pindex].y, 0.0f);
                             }
-                        } else if (pindexValid) {
+                        } else {
                             for (unsigned int vertex_idx = 0; vertex_idx < mesh->mNumVertices; vertex_idx++) {
                                 if (mesh->mTextureCoords[0][vertex_idx].z < 0) {
                                     // use default
@@ -469,10 +371,8 @@ void XmlSerializer::ReadObject(XmlNode &node) {
                             mesh->mColors[0] = new aiColor4D[mesh->mNumVertices];
 
                             ColorGroup *group = static_cast<ColorGroup *>(it->second);
-                            if (pindex >= 0 && static_cast<size_t>(pindex) < group->mColors.size()) {
-                                for (unsigned int vertex_idx = 0; vertex_idx < mesh->mNumVertices; vertex_idx++) {
-                                    mesh->mColors[0][vertex_idx] = group->mColors[pindex];
-                                }
+                            for (unsigned int vertex_idx = 0; vertex_idx < mesh->mNumVertices; vertex_idx++) {
+                                mesh->mColors[0][vertex_idx] = group->mColors[pindex];
                             }
                         }
                     }
@@ -493,22 +393,15 @@ void XmlSerializer::ReadObject(XmlNode &node) {
                         componentTransform = parseTransformMatrix(componentTransformStr);
                     }
 
-                    // Production extension: a component may reference an object in another model
-                    // part. Normalize the path once here so every later lookup can compare directly.
-                    std::string componentPath;
-                    if (getNodeAttribute(currentSubNode, D3MF::XmlTag::p_path, componentPath)) {
-                        componentPath = D3MFOpcPackage::NormalizePath(componentPath);
-                    }
-
                     if (getNodeAttribute(currentSubNode, D3MF::XmlTag::objectid, objectId)) {
-                        obj->mComponents.push_back({ objectId, componentTransform, componentPath });
+                        obj->mComponents.push_back({ objectId, componentTransform });
                     }
                 }
             }
         }
     }
 
-    mCurrentResources->insert(std::make_pair(id, obj));
+    mResourcesDictionnary.insert(std::make_pair(id, obj));
 }
 
 aiMesh *XmlSerializer::ReadMesh(XmlNode &node) {
@@ -570,13 +463,13 @@ void XmlSerializer::ImportTriangles(XmlNode &node, aiMesh *mesh) {
             int pindex[3];
             aiFace face = ReadTriangle(currentNode, pindex[0], pindex[1], pindex[2]);
             if (hasPid && (pindex[0] != IdNotSet || pindex[1] != IdNotSet || pindex[2] != IdNotSet)) {
-                auto it = mCurrentResources->find(pid);
-                if (it != mCurrentResources->end()) {
+                auto it = mResourcesDictionnary.find(pid);
+                if (it != mResourcesDictionnary.end()) {
                     if (it->second->getType() == ResourceType::RT_BaseMaterials) {
                         BaseMaterials *baseMaterials = static_cast<BaseMaterials *>(it->second);
 
                         auto update_material = [&](int idx) {
-                            if (pindex[idx] != IdNotSet && static_cast<size_t>(pindex[idx]) < baseMaterials->mMaterialIndex.size()) {
+                            if (pindex[idx] != IdNotSet) {
                                 mesh->mMaterialIndex = baseMaterials->mMaterialIndex[pindex[idx]];
                             }
                         };
@@ -607,12 +500,10 @@ void XmlSerializer::ImportTriangles(XmlNode &node, aiMesh *mesh) {
                         }
 
                         auto update_texture = [&](int idx) {
-                            if (pindex[idx] != IdNotSet && static_cast<size_t>(pindex[idx]) < group->mTex2dCoords.size()) {
+                            if (pindex[idx] != IdNotSet) {
                                 size_t vertex_index = face.mIndices[idx];
-                                if (vertex_index < mesh->mNumVertices) {
-                                    mesh->mTextureCoords[0][vertex_index] =
-                                            aiVector3D(group->mTex2dCoords[pindex[idx]].x, group->mTex2dCoords[pindex[idx]].y, 0.0f);
-                                }
+                                mesh->mTextureCoords[0][vertex_index] =
+                                        aiVector3D(group->mTex2dCoords[pindex[idx]].x, group->mTex2dCoords[pindex[idx]].y, 0.0f);
                             }
                         };
 
@@ -628,11 +519,9 @@ void XmlSerializer::ImportTriangles(XmlNode &node, aiMesh *mesh) {
                         }
 
                         auto update_color = [&](int idx) {
-                            if (pindex[idx] != IdNotSet && static_cast<size_t>(pindex[idx]) < group->mColors.size()) {
+                            if (pindex[idx] != IdNotSet) {
                                 size_t vertex_index = face.mIndices[idx];
-                                if (vertex_index < mesh->mNumVertices) {
-                                    mesh->mColors[0][vertex_index] = group->mColors[pindex[idx]];
-                                }
+                                mesh->mColors[0][vertex_index] = group->mColors[pindex[idx]];
                             }
                         };
 
@@ -667,7 +556,7 @@ void XmlSerializer::ReadBaseMaterials(XmlNode &node) {
             }
         }
 
-        mCurrentResources->insert(std::make_pair(id, baseMaterials));
+        mResourcesDictionnary.insert(std::make_pair(id, baseMaterials));
     }
 }
 
@@ -754,7 +643,7 @@ void XmlSerializer::ReadTextureGroup(XmlNode &node) {
 
     Texture2DGroup *group = new Texture2DGroup(id);
     ReadTextureCoords2D(node, group);
-    mCurrentResources->insert(std::make_pair(id, group));
+    mResourcesDictionnary.insert(std::make_pair(id, group));
 }
 
 aiMaterial *XmlSerializer::readMaterialDef(XmlNode &node, unsigned int basematerialsId) {
@@ -791,7 +680,7 @@ void XmlSerializer::ReadColor(XmlNode &node, ColorGroup *colorGroup) {
     for (XmlNode currentNode : node.children()) {
         const std::string currentName = currentNode.name();
         if (currentName == XmlTag::color_item) {
-            const char *color = currentNode.attribute(XmlTag::color_value).as_string();
+            const char *color = currentNode.attribute(XmlTag::color_vaule).as_string();
             aiColor4D color_value;
             if (parseColor(color, color_value)) {
                 colorGroup->mColors.push_back(color_value);
@@ -812,7 +701,7 @@ void XmlSerializer::ReadColorGroup(XmlNode &node) {
 
     ColorGroup *group = new ColorGroup(id);
     ReadColor(node, group);
-    mCurrentResources->insert(std::make_pair(id, group));
+    mResourcesDictionnary.insert(std::make_pair(id, group));
 }
 
 void XmlSerializer::StoreMaterialsInScene(aiScene *scene) {

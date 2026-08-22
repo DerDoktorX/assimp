@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef ASSIMP_BUILD_NO_LWO_IMPORTER
 
 // internal headers
-#include "LWOLoader.h"
+#include "AssetLib/LWO/LWOLoader.h"
 #include "PostProcessing/ConvertToLHProcess.h"
 #include "PostProcessing/ProcessHelper.h"
 #include "Geometry/GeometryUtils.h"
@@ -64,7 +64,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using namespace Assimp;
 
-static constexpr aiImporterDesc desc = {
+static const aiImporterDesc desc = {
     "LightWave/Modo Object Importer",
     "",
     "",
@@ -78,9 +78,33 @@ static constexpr aiImporterDesc desc = {
 };
 
 // ------------------------------------------------------------------------------------------------
+// Constructor to be privately used by Importer
+LWOImporter::LWOImporter() :
+        mIsLWO2(),
+        mIsLXOB(),
+        mIsLWO3(),
+        mLayers(),
+        mCurLayer(),
+        mTags(),
+        mMapping(),
+        mSurfaces(),
+        mFileBuffer(),
+        fileSize(),
+        mScene(nullptr),
+        configSpeedFlag(),
+        configLayerIndex(),
+        hasNamedLayer() {
+    // empty
+}
+
+// ------------------------------------------------------------------------------------------------
+// Destructor, private as well
+LWOImporter::~LWOImporter() = default;
+
+// ------------------------------------------------------------------------------------------------
 // Returns whether the class can handle the format of the given file.
 bool LWOImporter::CanRead(const std::string &file, IOSystem *pIOHandler, bool /*checkSig*/) const {
-    static constexpr uint32_t tokens[] = {
+    static const uint32_t tokens[] = {
         AI_LWO_FOURCC_LWOB,
         AI_LWO_FOURCC_LWO2,
         AI_LWO_FOURCC_LXOB
@@ -131,7 +155,6 @@ void LWOImporter::InternReadFile(const std::string &pFile,
     }
 
     mFileBuffer = &mBuffer[0] + 12;
-    mFileBufferEnd = &mBuffer[0] + fileSize;
     fileSize -= 12;
 
     // Initialize some members with their default values
@@ -504,7 +527,6 @@ void LWOImporter::ComputeNormals(aiMesh *mesh, const std::vector<unsigned int> &
                         continue;
                     vNormals += v;
                 }
-                mesh->mNormals[idx] = vNormals.Normalize();
             }
         }
     }
@@ -525,7 +547,6 @@ void LWOImporter::ComputeNormals(aiMesh *mesh, const std::vector<unsigned int> &
                     const aiVector3D &v = faceNormals[*a];
                     vNormals += v;
                 }
-                vNormals.Normalize();
                 for (std::vector<unsigned int>::const_iterator a = poResult.begin(); a != poResult.end(); ++a) {
                     mesh->mNormals[*a] = vNormals;
                     vertexDone[*a] = true;
@@ -835,7 +856,7 @@ void LWOImporter::CopyFaceIndicesLWO2(FaceList::iterator &it,
             face.mIndices = new unsigned int[face.mNumIndices];
             for (unsigned int i = 0; i < face.mNumIndices; i++) {
                 face.mIndices[i] = ReadVSizedIntLWO2((uint8_t *&)cursor) + mCurLayer->mPointIDXOfs;
-                if (face.mIndices[i] >= mCurLayer->mTempPoints.size()) {
+                if (face.mIndices[i] > mCurLayer->mTempPoints.size()) {
                     ASSIMP_LOG_WARN("LWO2: Failure evaluating face record, index is out of range");
                     face.mIndices[i] = (unsigned int)mCurLayer->mTempPoints.size() - 1;
                 }

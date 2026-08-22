@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -85,8 +85,8 @@ SMDImporter::SMDImporter() :
         configFrameID(),
         mBuffer(),
         mEnd(nullptr),
-        pScene(nullptr),
-        iFileSize( 0 ),
+        pScene(nullptr), 
+        iFileSize( 0 ), 
         iSmallestFrame( INT_MAX ),
         dLengthOfAnim( 0.0 ),
         bHasUVs(false ),
@@ -455,8 +455,11 @@ void SMDImporter::CreateOutputNodes() {
         delete pcOldRoot;
 
         pScene->mRootNode->mParent = nullptr;
-    } else {
-        pScene->mRootNode->mName.Set("<SMD_root>");
+    }
+    else
+    {
+        ::strcpy(pScene->mRootNode->mName.data, "<SMD_root>");
+        pScene->mRootNode->mName.length = 10;
     }
 }
 
@@ -595,7 +598,8 @@ void SMDImporter::CreateOutputMaterials() {
 
         if (aszTextures[iMat].length())
         {
-            szName.Set(aszTextures[iMat]);
+            ::strncpy(szName.data, aszTextures[iMat].c_str(), AI_MAXLEN - 1);
+            szName.length = static_cast<ai_uint32>( aszTextures[iMat].length() );
             pcMat->AddProperty(&szName,AI_MATKEY_TEXTURE_DIFFUSE(0));
         }
     }
@@ -979,7 +983,7 @@ bool SMDImporter::ParseFloat(const char *szCurrent, const char **szCurrentOut, c
         return false;
     }
 
-    *szCurrentOut = fast_atoreal_move(szCurrent,out);
+    *szCurrentOut = fast_atoreal_move<float>(szCurrent,out);
     return true;
 }
 

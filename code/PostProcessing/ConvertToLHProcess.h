@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -60,7 +60,7 @@ struct aiNode;
 struct aiMaterial;
 struct aiCamera;
 
-namespace Assimp {
+namespace Assimp    {
 
 // -----------------------------------------------------------------------------------
 /** @brief The MakeLeftHandedProcess converts all imported data to a left-handed
@@ -72,7 +72,7 @@ namespace Assimp {
  *
  * @note RH-LH and LH-RH is the same, so this class can be used for both
  */
-class MakeLeftHandedProcess final : public BaseProcess {
+class MakeLeftHandedProcess : public BaseProcess {
 public:
     MakeLeftHandedProcess() = default;
     ~MakeLeftHandedProcess() override = default;
@@ -147,7 +147,7 @@ public:
 // ---------------------------------------------------------------------------
 /** Postprocessing step to flip the UV coordinate system of the import data
  */
-class FlipUVsProcess final : public BaseProcess
+class FlipUVsProcess : public BaseProcess
 {
     friend class Importer;
 
@@ -156,13 +156,13 @@ public:
     FlipUVsProcess();
 
     /** Destructor, private as well */
-    ~FlipUVsProcess() override;
+    ~FlipUVsProcess();
 
     // -------------------------------------------------------------------
-    bool IsActive( unsigned int pFlags) const override;
+    bool IsActive( unsigned int pFlags) const;
 
     // -------------------------------------------------------------------
-    void Execute( aiScene* pScene) override;
+    void Execute( aiScene* pScene);
 
 protected:
     void ProcessMesh( aiMesh* pMesh);

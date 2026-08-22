@@ -2,7 +2,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
+
 
 All rights reserved.
 
@@ -61,10 +62,7 @@ public:
     /// The class constructor for a specific scene to export
     PlyExporter(const char* filename, const aiScene* pScene, bool binary = false);
     /// The class destructor, empty.
-    ~PlyExporter() = default;
-
-    PlyExporter( const PlyExporter & ) = delete;
-    PlyExporter &operator = ( const PlyExporter & ) = delete;
+    ~PlyExporter();
 
 public:
     /// public string-streams to write all output into:
@@ -79,6 +77,10 @@ private:
 private:
     const std::string filename;  // tHE FILENAME
     const std::string endl;      // obviously, this endl() doesn't flush() the stream
+
+private:
+    PlyExporter( const PlyExporter & );
+    PlyExporter &operator = ( const PlyExporter & );
 };
 
 } // Namespace Assimp

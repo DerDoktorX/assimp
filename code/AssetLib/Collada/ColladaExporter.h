@@ -2,7 +2,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
+
 
 All rights reserved.
 
@@ -65,13 +66,13 @@ class IOSystem;
 
 /// Helper class to export a given scene to a Collada file. Just for my personal
 /// comfort when implementing it.
-class ColladaExporter final {
+class ColladaExporter {
 public:
     /// Constructor for a specific scene to export
     ColladaExporter(const aiScene *pScene, IOSystem *pIOSystem, const std::string &path, const std::string &file);
 
     /// Destructor
-    virtual ~ColladaExporter() = default;
+    virtual ~ColladaExporter();
 
 protected:
     /// Starts writing the contents

@@ -4,7 +4,8 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
+
 
 All rights reserved.
 
@@ -61,7 +62,7 @@ namespace Assimp {
  * the hierarchy. It contains no actual mesh data, but we generate a dummy mesh
  * inside the loader just to be able to see something.
 */
-class BVHLoader final : public BaseImporter {
+class BVHLoader : public BaseImporter {
 
     /** Possible animation channels for which the motion data holds the values */
     enum ChannelType {
@@ -79,27 +80,32 @@ class BVHLoader final : public BaseImporter {
         std::vector<ChannelType> mChannels;
         std::vector<float> mChannelValues; // motion data values for that node. Of size NumChannels * NumFrames
 
-        Node() : mNode(nullptr) {}
-        explicit Node(const aiNode *pNode) :mNode(pNode) {}
+        Node() :
+                mNode(nullptr) {}
+
+        explicit Node(const aiNode *pNode) :
+                mNode(pNode) {}
     };
 
 public:
     BVHLoader();
-    ~BVHLoader() override = default;
+    ~BVHLoader();
 
+public:
     /** Returns whether the class can handle the format of the given file.
      * See BaseImporter::CanRead() for details. */
-    bool CanRead(const std::string &pFile, IOSystem *pIOHandler, bool cs) const override;
+    bool CanRead(const std::string &pFile, IOSystem *pIOHandler, bool cs) const;
 
-    void SetupProperties(const Importer *pImp) override;
-    const aiImporterDesc *GetInfo() const override;
+    void SetupProperties(const Importer *pImp);
+    const aiImporterDesc *GetInfo() const;
 
 protected:
     /** Imports the given file into the given scene structure.
      * See BaseImporter::InternReadFile() for details
      */
-    void InternReadFile(const std::string &pFile, aiScene *pScene, IOSystem *pIOHandler) override;
+    void InternReadFile(const std::string &pFile, aiScene *pScene, IOSystem *pIOHandler);
 
+protected:
     /** Reads the file */
     void ReadStructure(aiScene *pScene);
 

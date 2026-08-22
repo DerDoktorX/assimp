@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 All rights reserved.
 
@@ -67,14 +67,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 using namespace Assimp;
 
 namespace Assimp {
-
 // underlying structure for aiPropertyStore
-using PropertyMap =  BatchLoader::PropertyMap ;
+typedef BatchLoader::PropertyMap PropertyMap;
 
 #if defined(__has_warning)
-#   if __has_warning("-Wordered-compare-function-pointers")
-#   pragma GCC diagnostic push
-#   pragma GCC diagnostic ignored "-Wordered-compare-function-pointers"
+#if __has_warning("-Wordered-compare-function-pointers")
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wordered-compare-function-pointers"
 #endif
 #endif
 
@@ -112,7 +111,6 @@ void GetImporterInstanceList(std::vector<BaseImporter *> &out);
 
 /** will delete all registered importers. */
 void DeleteImporterInstanceList(std::vector<BaseImporter *> &out);
-
 } // namespace Assimp
 
 #ifndef ASSIMP_BUILD_SINGLETHREADED
@@ -122,14 +120,14 @@ static std::mutex gLogStreamMutex;
 
 // ------------------------------------------------------------------------------------------------
 // Custom LogStream implementation for the C-API
-class LogToCallbackRedirector final : public LogStream {
+class LogToCallbackRedirector : public LogStream {
 public:
     explicit LogToCallbackRedirector(const aiLogStream &s) :
-            mStream(s) {
+            stream(s) {
         ai_assert(nullptr != s.callback);
     }
 
-    ~LogToCallbackRedirector() override {
+    ~LogToCallbackRedirector() {
 #ifndef ASSIMP_BUILD_SINGLETHREADED
         std::lock_guard<std::mutex> lock(gLogStreamMutex);
 #endif
@@ -139,7 +137,7 @@ public:
         // might cause strange problems, but the chance is quite low.
 
         PredefLogStreamMap::iterator it = std::find(gPredefinedStreams.begin(),
-                gPredefinedStreams.end(), (Assimp::LogStream *)mStream.user);
+                gPredefinedStreams.end(), (Assimp::LogStream *)stream.user);
 
         if (it != gPredefinedStreams.end()) {
             delete *it;
@@ -148,12 +146,12 @@ public:
     }
 
     /** @copydoc LogStream::write */
-    void write(const char *message) override {
-        mStream.callback(message, mStream.user);
+    void write(const char *message) {
+        stream.callback(message, stream.user);
     }
 
 private:
-    const aiLogStream &mStream;
+    aiLogStream stream;
 };
 
 // ------------------------------------------------------------------------------------------------
@@ -356,10 +354,9 @@ ASSIMP_API const aiScene *aiApplyCustomizedPostProcessing(const aiScene *scene,
 void CallbackToLogRedirector(const char *msg, char *dt) {
     ai_assert(nullptr != msg);
     ai_assert(nullptr != dt);
-    LogStream *stream = (LogStream *)dt;
-    if (stream != nullptr) {
-        stream->write(msg);
-    }
+    LogStream *s = (LogStream *)dt;
+
+    s->write(msg);
 }
 
 static LogStream *DefaultStream = nullptr;
@@ -372,7 +369,7 @@ ASSIMP_API aiLogStream aiGetPredefinedLogStream(aiDefaultLogStream pStream, cons
     if (DefaultStream == nullptr) {
         DefaultStream = LogStream::createDefaultStream(pStream, file);
     }
-
+    
     if (!DefaultStream) {
         sout.callback = nullptr;
         sout.user = nullptr;
@@ -418,10 +415,6 @@ ASSIMP_API aiReturn aiDetachLogStream(const aiLogStream *stream) {
     }
     DefaultLogger::get()->detachStream(it->second);
     delete it->second;
-
-    if ((Assimp::LogStream *)stream->user == DefaultStream) {
-        DefaultStream = nullptr;
-    }
 
     gActiveLogStreams.erase(it);
 

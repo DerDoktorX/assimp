@@ -38,7 +38,8 @@
 #include <stdexcept>
 #include <vector>
 
-#if defined(_WIN32) && defined(_MSC_VER) && !defined(__INTEL_COMPILER)
+
+#if defined(_WIN32)
 #  pragma warning( disable: 4251)
 #endif
 namespace p2t {

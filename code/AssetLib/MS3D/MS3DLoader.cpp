@@ -3,7 +3,9 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
+
+
 
 All rights reserved.
 
@@ -44,8 +46,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  Written against http://chumbalum.swissquake.ch/ms3d/ms3dspec.txt
  */
 
+
 #ifndef ASSIMP_BUILD_NO_MS3D_IMPORTER
 
+// internal headers
 #include "MS3DLoader.h"
 #include <assimp/StreamReader.h>
 #include <assimp/DefaultLogger.hpp>
@@ -133,8 +137,7 @@ void MS3DImporter :: ReadComments(StreamReaderLE& stream, std::vector<T>& outp)
 }
 
 // ------------------------------------------------------------------------------------------------
-template <typename T, typename T2, typename T3> 
-bool inrange(const T& in, const T2& lower, const T3& higher)
+template <typename T, typename T2, typename T3> bool inrange(const T& in, const T2& lower, const T3& higher)
 {
     return in > lower && in <= higher;
 }
@@ -389,14 +392,13 @@ void MS3DImporter::InternReadFile( const std::string& pFile,
 
     if (need_default && materials.size()) {
         ASSIMP_LOG_WARN("MS3D: Found group with no material assigned, spawning default material");
-          // if one of the groups has no material assigned, but there are other
+        // if one of the groups has no material assigned, but there are other
         // groups with materials, a default material needs to be added (
         // scenepreprocessor adds a default material only if nummat==0).
         materials.emplace_back();
         TempMaterial& m = materials.back();
-        constexpr char DefaultMat[] = "<MS3D_DefaultMat>";
-        strncpy(m.name, DefaultMat, sizeof(m.name) - 1);
-        m.name[sizeof(m.name) - 1] = '\0';
+
+        strcpy(m.name,"<MS3D_DefaultMat>");
         m.diffuse = aiColor4D(0.6f,0.6f,0.6f,1.0);
         m.transparency = 1.f;
         m.shininess = 0.f;
@@ -609,7 +611,7 @@ void MS3DImporter::InternReadFile( const std::string& pFile,
         // anim->mDuration = totalframes/animfps;
 
         anim->mChannels = new aiNodeAnim*[joints.size()]();
-        for (auto it = joints.begin(); it != joints.end(); ++it) {
+        for(std::vector<TempJoint>::const_iterator it = joints.begin(); it != joints.end(); ++it) {
             if ((*it).rotFrames.empty() && (*it).posFrames.empty()) {
                 continue;
             }
@@ -619,7 +621,7 @@ void MS3DImporter::InternReadFile( const std::string& pFile,
 
             if ((*it).rotFrames.size()) {
                 nd->mRotationKeys = new aiQuatKey[(*it).rotFrames.size()];
-                for (auto rot = (*it).rotFrames.begin(); rot != (*it).rotFrames.end(); ++rot) {
+                for(std::vector<TempKeyFrame>::const_iterator rot = (*it).rotFrames.begin(); rot != (*it).rotFrames.end(); ++rot) {
                     aiQuatKey& q = nd->mRotationKeys[nd->mNumRotationKeys++];
 
                     q.mTime = (*rot).time*animfps;
@@ -631,7 +633,8 @@ void MS3DImporter::InternReadFile( const std::string& pFile,
             if ((*it).posFrames.size()) {
                 nd->mPositionKeys = new aiVectorKey[(*it).posFrames.size()];
 
-                for(auto pos = (*it).posFrames.begin(); pos != (*it).posFrames.end(); ++pos) {
+                aiQuatKey* qu = nd->mRotationKeys;
+                for(std::vector<TempKeyFrame>::const_iterator pos = (*it).posFrames.begin(); pos != (*it).posFrames.end(); ++pos,++qu) {
                     aiVectorKey& v = nd->mPositionKeys[nd->mNumPositionKeys++];
 
                     v.mTime = (*pos).time*animfps;

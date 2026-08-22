@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2026, assimp team
+Copyright (c) 2006-2024, assimp team
 
 
 
@@ -88,10 +88,7 @@ TEST_F(AssimpAPITest_aiQuaternion, aiQuaternionFromNormalizedQuaternionTest) {
     const auto qvec3 = random_unit_vec3();
     result_cpp = aiQuaternion(qvec3);
     aiQuaternionFromNormalizedQuaternion(&result_c, &qvec3);
-    // Use a larger tolerance because FMA contraction differences in
-    // 1.0 - x*x - y*y - z*z can flip the sign of a near-zero residual,
-    // causing w = 0 vs w = sqrt(tiny) ≈ 1e-4.
-    EXPECT_TRUE(result_cpp.Equal(result_c, 1e-4f));
+    EXPECT_EQ(result_cpp, result_c);
 }
 
 TEST_F(AssimpAPITest_aiQuaternion, aiQuaternionAreEqualTest) {
