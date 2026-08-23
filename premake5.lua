@@ -74,7 +74,7 @@ project "assimp"
 
 	defines
 	{
-        "RAPIDJSON_HAS_STDSTRING",
+        "RAPIDJSON_HAS_STDSTRING=1",
         "RAPIDJSON_NOMEMBERITERATORCLASS",
         
 		-- Importer, die wir NICHT brauchen (nur GLTF/GLTF2/FBX/OBJ bleiben aktiv)
