@@ -141,13 +141,10 @@ project "assimp"
 		"ASSIMP_BUILD_NO_3MF_EXPORTER",
 		"ASSIMP_BUILD_NO_ASSJSON_EXPORTER",
 		"ASSIMP_BUILD_NO_PBRT_EXPORTER",
-
-        
 	}
 
 	filter "system:windows"
 		systemversion "latest"
-		cppdialect "C++17"
 
 		defines
 		{
@@ -155,6 +152,10 @@ project "assimp"
 			"UNICODE",
 			"_UNICODE",
 		}
+
+	filter "system:linux"
+    	systemversion "latest"
+    	pic "On"
 
 	filter "toolset:msc*"
 		buildoptions { "/bigobj" }
@@ -170,3 +171,4 @@ project "assimp"
 	filter "configurations:Dist"
 		runtime "Release"
 		optimize "on"
+
