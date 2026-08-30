@@ -1,0 +1,639 @@
+﻿add_library("assimp" STATIC
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXAnimation.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXBinaryTokenizer.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXCommon.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXCompileConfig.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXConverter.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXConverter.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXDeformer.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXDocument.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXDocument.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXDocumentUtil.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXDocumentUtil.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXExportNode.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXExportNode.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXExportProperty.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXExportProperty.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXExporter.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXExporter.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXImportSettings.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXImporter.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXImporter.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXMaterial.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXMeshGeometry.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXMeshGeometry.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXModel.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXNodeAttribute.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXParser.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXParser.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXProperties.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXProperties.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXTokenizer.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXTokenizer.h"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXUtil.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/FBX/FBXUtil.h"
+        "Rynex/vendor/assimp/code/AssetLib/Obj/ObjExporter.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/Obj/ObjExporter.h"
+        "Rynex/vendor/assimp/code/AssetLib/Obj/ObjFileData.h"
+        "Rynex/vendor/assimp/code/AssetLib/Obj/ObjFileImporter.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/Obj/ObjFileImporter.h"
+        "Rynex/vendor/assimp/code/AssetLib/Obj/ObjFileMtlImporter.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/Obj/ObjFileMtlImporter.h"
+        "Rynex/vendor/assimp/code/AssetLib/Obj/ObjFileParser.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/Obj/ObjFileParser.h"
+        "Rynex/vendor/assimp/code/AssetLib/Obj/ObjTools.h"
+        "Rynex/vendor/assimp/code/AssetLib/glTF/glTFAsset.h"
+        "Rynex/vendor/assimp/code/AssetLib/glTF/glTFAsset.inl"
+        "Rynex/vendor/assimp/code/AssetLib/glTF/glTFAssetWriter.h"
+        "Rynex/vendor/assimp/code/AssetLib/glTF/glTFAssetWriter.inl"
+        "Rynex/vendor/assimp/code/AssetLib/glTF/glTFCommon.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/glTF/glTFCommon.h"
+        "Rynex/vendor/assimp/code/AssetLib/glTF/glTFExporter.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/glTF/glTFExporter.h"
+        "Rynex/vendor/assimp/code/AssetLib/glTF/glTFImporter.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/glTF/glTFImporter.h"
+        "Rynex/vendor/assimp/code/AssetLib/glTF2/glTF2Asset.h"
+        "Rynex/vendor/assimp/code/AssetLib/glTF2/glTF2Asset.inl"
+        "Rynex/vendor/assimp/code/AssetLib/glTF2/glTF2AssetWriter.h"
+        "Rynex/vendor/assimp/code/AssetLib/glTF2/glTF2AssetWriter.inl"
+        "Rynex/vendor/assimp/code/AssetLib/glTF2/glTF2Exporter.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/glTF2/glTF2Exporter.h"
+        "Rynex/vendor/assimp/code/AssetLib/glTF2/glTF2Importer.cpp"
+        "Rynex/vendor/assimp/code/AssetLib/glTF2/glTF2Importer.h"
+      "Rynex/vendor/assimp/code/CApi/AssimpCExport.cpp"
+      "Rynex/vendor/assimp/code/CApi/CInterfaceIOWrapper.cpp"
+      "Rynex/vendor/assimp/code/CApi/CInterfaceIOWrapper.h"
+      "Rynex/vendor/assimp/code/Common/AssertHandler.cpp"
+      "Rynex/vendor/assimp/code/Common/Assimp.cpp"
+      "Rynex/vendor/assimp/code/Common/Base64.cpp"
+      "Rynex/vendor/assimp/code/Common/BaseImporter.cpp"
+      "Rynex/vendor/assimp/code/Common/BaseProcess.cpp"
+      "Rynex/vendor/assimp/code/Common/BaseProcess.h"
+      "Rynex/vendor/assimp/code/Common/Bitmap.cpp"
+      "Rynex/vendor/assimp/code/Common/Compression.cpp"
+      "Rynex/vendor/assimp/code/Common/Compression.h"
+      "Rynex/vendor/assimp/code/Common/CreateAnimMesh.cpp"
+      "Rynex/vendor/assimp/code/Common/DefaultIOStream.cpp"
+      "Rynex/vendor/assimp/code/Common/DefaultIOSystem.cpp"
+      "Rynex/vendor/assimp/code/Common/DefaultLogger.cpp"
+      "Rynex/vendor/assimp/code/Common/DefaultProgressHandler.h"
+      "Rynex/vendor/assimp/code/Common/Exceptional.cpp"
+      "Rynex/vendor/assimp/code/Common/Exporter.cpp"
+      "Rynex/vendor/assimp/code/Common/FileLogStream.h"
+      "Rynex/vendor/assimp/code/Common/FileSystemFilter.h"
+      "Rynex/vendor/assimp/code/Common/IFF.h"
+      "Rynex/vendor/assimp/code/Common/IOSystem.cpp"
+      "Rynex/vendor/assimp/code/Common/Importer.cpp"
+      "Rynex/vendor/assimp/code/Common/Importer.h"
+      "Rynex/vendor/assimp/code/Common/ImporterRegistry.cpp"
+      "Rynex/vendor/assimp/code/Common/Maybe.h"
+      "Rynex/vendor/assimp/code/Common/PolyTools.h"
+      "Rynex/vendor/assimp/code/Common/PostStepRegistry.cpp"
+      "Rynex/vendor/assimp/code/Common/RemoveComments.cpp"
+      "Rynex/vendor/assimp/code/Common/SGSpatialSort.cpp"
+      "Rynex/vendor/assimp/code/Common/SceneCombiner.cpp"
+      "Rynex/vendor/assimp/code/Common/ScenePreprocessor.cpp"
+      "Rynex/vendor/assimp/code/Common/ScenePreprocessor.h"
+      "Rynex/vendor/assimp/code/Common/ScenePrivate.h"
+      "Rynex/vendor/assimp/code/Common/SkeletonMeshBuilder.cpp"
+      "Rynex/vendor/assimp/code/Common/SpatialSort.cpp"
+      "Rynex/vendor/assimp/code/Common/StackAllocator.h"
+      "Rynex/vendor/assimp/code/Common/StandardShapes.cpp"
+      "Rynex/vendor/assimp/code/Common/StbCommon.h"
+      "Rynex/vendor/assimp/code/Common/StdOStreamLogStream.h"
+      "Rynex/vendor/assimp/code/Common/Subdivision.cpp"
+      "Rynex/vendor/assimp/code/Common/TargetAnimation.cpp"
+      "Rynex/vendor/assimp/code/Common/TargetAnimation.h"
+      "Rynex/vendor/assimp/code/Common/Version.cpp"
+      "Rynex/vendor/assimp/code/Common/VertexTriangleAdjacency.cpp"
+      "Rynex/vendor/assimp/code/Common/VertexTriangleAdjacency.h"
+      "Rynex/vendor/assimp/code/Common/Win32DebugLogStream.h"
+      "Rynex/vendor/assimp/code/Common/ZipArchiveIOSystem.cpp"
+      "Rynex/vendor/assimp/code/Common/assbin_chunks.h"
+      "Rynex/vendor/assimp/code/Common/material.cpp"
+      "Rynex/vendor/assimp/code/Common/scene.cpp"
+      "Rynex/vendor/assimp/code/Common/simd.cpp"
+      "Rynex/vendor/assimp/code/Common/simd.h"
+      "Rynex/vendor/assimp/code/Geometry/GeometryUtils.cpp"
+      "Rynex/vendor/assimp/code/Geometry/GeometryUtils.h"
+      "Rynex/vendor/assimp/code/Material/MaterialSystem.cpp"
+      "Rynex/vendor/assimp/code/Material/MaterialSystem.h"
+      "Rynex/vendor/assimp/code/PostProcessing/ArmaturePopulate.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/ArmaturePopulate.h"
+      "Rynex/vendor/assimp/code/PostProcessing/CalcTangentsProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/CalcTangentsProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/ComputeUVMappingProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/ComputeUVMappingProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/ConvertToLHProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/ConvertToLHProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/DeboneProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/DeboneProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/DropFaceNormalsProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/DropFaceNormalsProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/EmbedTexturesProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/EmbedTexturesProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/FindDegenerates.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/FindDegenerates.h"
+      "Rynex/vendor/assimp/code/PostProcessing/FindInstancesProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/FindInstancesProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/FindInvalidDataProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/FindInvalidDataProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/FixNormalsStep.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/FixNormalsStep.h"
+      "Rynex/vendor/assimp/code/PostProcessing/GenBoundingBoxesProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/GenBoundingBoxesProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/GenFaceNormalsProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/GenFaceNormalsProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/GenVertexNormalsProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/GenVertexNormalsProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/ImproveCacheLocality.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/ImproveCacheLocality.h"
+      "Rynex/vendor/assimp/code/PostProcessing/JoinVerticesProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/JoinVerticesProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/LimitBoneWeightsProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/LimitBoneWeightsProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/MakeVerboseFormat.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/MakeVerboseFormat.h"
+      "Rynex/vendor/assimp/code/PostProcessing/OptimizeGraph.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/OptimizeGraph.h"
+      "Rynex/vendor/assimp/code/PostProcessing/OptimizeMeshes.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/OptimizeMeshes.h"
+      "Rynex/vendor/assimp/code/PostProcessing/PretransformVertices.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/PretransformVertices.h"
+      "Rynex/vendor/assimp/code/PostProcessing/ProcessHelper.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/ProcessHelper.h"
+      "Rynex/vendor/assimp/code/PostProcessing/RemoveRedundantMaterials.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/RemoveRedundantMaterials.h"
+      "Rynex/vendor/assimp/code/PostProcessing/RemoveVCProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/RemoveVCProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/ScaleProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/ScaleProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/SortByPTypeProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/SortByPTypeProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/SplitByBoneCountProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/SplitByBoneCountProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/SplitLargeMeshes.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/SplitLargeMeshes.h"
+      "Rynex/vendor/assimp/code/PostProcessing/TextureTransform.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/TextureTransform.h"
+      "Rynex/vendor/assimp/code/PostProcessing/TriangulateProcess.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/TriangulateProcess.h"
+      "Rynex/vendor/assimp/code/PostProcessing/ValidateDataStructure.cpp"
+      "Rynex/vendor/assimp/code/PostProcessing/ValidateDataStructure.h"
+        "Rynex/vendor/assimp/contrib/pugixml/src/pugiconfig.hpp"
+        "Rynex/vendor/assimp/contrib/pugixml/src/pugixml.cpp"
+        "Rynex/vendor/assimp/contrib/pugixml/src/pugixml.hpp"
+      "Rynex/vendor/assimp/contrib/unzip/crypt.h"
+      "Rynex/vendor/assimp/contrib/unzip/ioapi.c"
+      "Rynex/vendor/assimp/contrib/unzip/ioapi.h"
+      "Rynex/vendor/assimp/contrib/unzip/unzip.c"
+      "Rynex/vendor/assimp/contrib/unzip/unzip.h"
+      "Rynex/vendor/assimp/contrib/zlib/adler32.c"
+      "Rynex/vendor/assimp/contrib/zlib/compress.c"
+      "Rynex/vendor/assimp/contrib/zlib/crc32.c"
+      "Rynex/vendor/assimp/contrib/zlib/crc32.h"
+      "Rynex/vendor/assimp/contrib/zlib/deflate.c"
+      "Rynex/vendor/assimp/contrib/zlib/deflate.h"
+      "Rynex/vendor/assimp/contrib/zlib/gzclose.c"
+      "Rynex/vendor/assimp/contrib/zlib/gzguts.h"
+      "Rynex/vendor/assimp/contrib/zlib/gzlib.c"
+      "Rynex/vendor/assimp/contrib/zlib/gzread.c"
+      "Rynex/vendor/assimp/contrib/zlib/gzwrite.c"
+      "Rynex/vendor/assimp/contrib/zlib/infback.c"
+      "Rynex/vendor/assimp/contrib/zlib/inffast.c"
+      "Rynex/vendor/assimp/contrib/zlib/inffast.h"
+      "Rynex/vendor/assimp/contrib/zlib/inffixed.h"
+      "Rynex/vendor/assimp/contrib/zlib/inflate.c"
+      "Rynex/vendor/assimp/contrib/zlib/inflate.h"
+      "Rynex/vendor/assimp/contrib/zlib/inftrees.c"
+      "Rynex/vendor/assimp/contrib/zlib/inftrees.h"
+      "Rynex/vendor/assimp/contrib/zlib/trees.c"
+      "Rynex/vendor/assimp/contrib/zlib/trees.h"
+      "Rynex/vendor/assimp/contrib/zlib/uncompr.c"
+      "Rynex/vendor/assimp/contrib/zlib/zconf.h"
+      "Rynex/vendor/assimp/contrib/zlib/zlib.h"
+      "Rynex/vendor/assimp/contrib/zlib/zutil.c"
+      "Rynex/vendor/assimp/contrib/zlib/zutil.h"
+      "Rynex/vendor/assimp/include/assimp/AssertHandler.h"
+      "Rynex/vendor/assimp/include/assimp/Base64.hpp"
+      "Rynex/vendor/assimp/include/assimp/BaseImporter.h"
+      "Rynex/vendor/assimp/include/assimp/Bitmap.h"
+      "Rynex/vendor/assimp/include/assimp/BlobIOSystem.h"
+      "Rynex/vendor/assimp/include/assimp/ByteSwapper.h"
+      "Rynex/vendor/assimp/include/assimp/ColladaMetaData.h"
+        "Rynex/vendor/assimp/include/assimp/Compiler/poppack1.h"
+        "Rynex/vendor/assimp/include/assimp/Compiler/pstdint.h"
+        "Rynex/vendor/assimp/include/assimp/Compiler/pushpack1.h"
+      "Rynex/vendor/assimp/include/assimp/CreateAnimMesh.h"
+      "Rynex/vendor/assimp/include/assimp/DefaultIOStream.h"
+      "Rynex/vendor/assimp/include/assimp/DefaultIOSystem.h"
+      "Rynex/vendor/assimp/include/assimp/DefaultLogger.hpp"
+      "Rynex/vendor/assimp/include/assimp/Exceptional.h"
+      "Rynex/vendor/assimp/include/assimp/Exporter.hpp"
+      "Rynex/vendor/assimp/include/assimp/GenericProperty.h"
+      "Rynex/vendor/assimp/include/assimp/GltfMaterial.h"
+      "Rynex/vendor/assimp/include/assimp/Hash.h"
+      "Rynex/vendor/assimp/include/assimp/IOStream.hpp"
+      "Rynex/vendor/assimp/include/assimp/IOStreamBuffer.h"
+      "Rynex/vendor/assimp/include/assimp/IOSystem.hpp"
+      "Rynex/vendor/assimp/include/assimp/Importer.hpp"
+      "Rynex/vendor/assimp/include/assimp/LineSplitter.h"
+      "Rynex/vendor/assimp/include/assimp/LogAux.h"
+      "Rynex/vendor/assimp/include/assimp/LogStream.hpp"
+      "Rynex/vendor/assimp/include/assimp/Logger.hpp"
+      "Rynex/vendor/assimp/include/assimp/MathFunctions.h"
+      "Rynex/vendor/assimp/include/assimp/MemoryIOWrapper.h"
+      "Rynex/vendor/assimp/include/assimp/NullLogger.hpp"
+      "Rynex/vendor/assimp/include/assimp/ObjMaterial.h"
+      "Rynex/vendor/assimp/include/assimp/ParsingUtils.h"
+      "Rynex/vendor/assimp/include/assimp/Profiler.h"
+      "Rynex/vendor/assimp/include/assimp/ProgressHandler.hpp"
+      "Rynex/vendor/assimp/include/assimp/RemoveComments.h"
+      "Rynex/vendor/assimp/include/assimp/SGSpatialSort.h"
+      "Rynex/vendor/assimp/include/assimp/SceneCombiner.h"
+      "Rynex/vendor/assimp/include/assimp/SkeletonMeshBuilder.h"
+      "Rynex/vendor/assimp/include/assimp/SmallVector.h"
+      "Rynex/vendor/assimp/include/assimp/SmoothingGroups.h"
+      "Rynex/vendor/assimp/include/assimp/SmoothingGroups.inl"
+      "Rynex/vendor/assimp/include/assimp/SpatialSort.h"
+      "Rynex/vendor/assimp/include/assimp/StandardShapes.h"
+      "Rynex/vendor/assimp/include/assimp/StreamReader.h"
+      "Rynex/vendor/assimp/include/assimp/StreamWriter.h"
+      "Rynex/vendor/assimp/include/assimp/StringComparison.h"
+      "Rynex/vendor/assimp/include/assimp/StringUtils.h"
+      "Rynex/vendor/assimp/include/assimp/Subdivision.h"
+      "Rynex/vendor/assimp/include/assimp/TinyFormatter.h"
+      "Rynex/vendor/assimp/include/assimp/Vertex.h"
+      "Rynex/vendor/assimp/include/assimp/XMLTools.h"
+      "Rynex/vendor/assimp/include/assimp/XmlParser.h"
+      "Rynex/vendor/assimp/include/assimp/ZipArchiveIOSystem.h"
+      "Rynex/vendor/assimp/include/assimp/aabb.h"
+      "Rynex/vendor/assimp/include/assimp/ai_assert.h"
+      "Rynex/vendor/assimp/include/assimp/anim.h"
+      "Rynex/vendor/assimp/include/assimp/camera.h"
+      "Rynex/vendor/assimp/include/assimp/cexport.h"
+      "Rynex/vendor/assimp/include/assimp/cfileio.h"
+      "Rynex/vendor/assimp/include/assimp/cimport.h"
+      "Rynex/vendor/assimp/include/assimp/color4.h"
+      "Rynex/vendor/assimp/include/assimp/color4.inl"
+      "Rynex/vendor/assimp/include/assimp/commonMetaData.h"
+      "Rynex/vendor/assimp/include/assimp/config.h"
+      "Rynex/vendor/assimp/include/assimp/defs.h"
+      "Rynex/vendor/assimp/include/assimp/fast_atof.h"
+      "Rynex/vendor/assimp/include/assimp/importerdesc.h"
+      "Rynex/vendor/assimp/include/assimp/light.h"
+      "Rynex/vendor/assimp/include/assimp/material.h"
+      "Rynex/vendor/assimp/include/assimp/material.inl"
+      "Rynex/vendor/assimp/include/assimp/matrix3x3.h"
+      "Rynex/vendor/assimp/include/assimp/matrix3x3.inl"
+      "Rynex/vendor/assimp/include/assimp/matrix4x4.h"
+      "Rynex/vendor/assimp/include/assimp/matrix4x4.inl"
+      "Rynex/vendor/assimp/include/assimp/mesh.h"
+      "Rynex/vendor/assimp/include/assimp/metadata.h"
+      "Rynex/vendor/assimp/include/assimp/pbrmaterial.h"
+          "Rynex/vendor/assimp/include/assimp/port/AndroidJNI/AndroidJNIIOSystem.h"
+          "Rynex/vendor/assimp/include/assimp/port/AndroidJNI/BundledAssetIOSystem.h"
+      "Rynex/vendor/assimp/include/assimp/postprocess.h"
+      "Rynex/vendor/assimp/include/assimp/qnan.h"
+      "Rynex/vendor/assimp/include/assimp/quaternion.h"
+      "Rynex/vendor/assimp/include/assimp/quaternion.inl"
+      "Rynex/vendor/assimp/include/assimp/revision.h"
+      "Rynex/vendor/assimp/include/assimp/scene.h"
+      "Rynex/vendor/assimp/include/assimp/texture.h"
+      "Rynex/vendor/assimp/include/assimp/types.h"
+      "Rynex/vendor/assimp/include/assimp/vector2.h"
+      "Rynex/vendor/assimp/include/assimp/vector2.inl"
+      "Rynex/vendor/assimp/include/assimp/vector3.h"
+      "Rynex/vendor/assimp/include/assimp/vector3.inl"
+      "Rynex/vendor/assimp/include/assimp/version.h"
+)
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  set_target_properties("assimp" PROPERTIES
+    OUTPUT_NAME "assimp"
+    ARCHIVE_OUTPUT_DIRECTORY "D:/dev/Rynex-Rendering/Rynex/vendor/assimp/bin/Debug-windows-x86_64/assimp"
+    LIBRARY_OUTPUT_DIRECTORY "D:/dev/Rynex-Rendering/Rynex/vendor/assimp/bin/Debug-windows-x86_64/assimp"
+    RUNTIME_OUTPUT_DIRECTORY "D:/dev/Rynex-Rendering/Rynex/vendor/assimp/bin/Debug-windows-x86_64/assimp"
+  )
+endif()
+target_include_directories("assimp" PRIVATE
+  $<$<CONFIG:Debug>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp>
+  $<$<CONFIG:Debug>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/code>
+  $<$<CONFIG:Debug>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/include>
+  $<$<CONFIG:Debug>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib>
+  $<$<CONFIG:Debug>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/zlib>
+  $<$<CONFIG:Debug>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/unzip>
+  $<$<CONFIG:Debug>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/pugixml/src>
+  $<$<CONFIG:Debug>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/rapidjson/include>
+  $<$<CONFIG:Debug>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/utf8cpp/source>
+)
+target_compile_definitions("assimp" PRIVATE
+  $<$<CONFIG:Debug>:RY_PLATFORM_WINDOWS>
+  $<$<CONFIG:Debug>:RAPIDJSON_HAS_STDSTRING=1>
+  $<$<CONFIG:Debug>:RAPIDJSON_NOMEMBERITERATORCLASS>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_USD_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_X_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_AMF_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_3DS_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_MD3_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_MDL_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_MD2_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_PLY_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_ASE_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_HMP_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_SMD_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_MDC_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_MD5_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_STL_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_LWO_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_DXF_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_NFF_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_RAW_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_SIB_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_OFF_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_AC_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_BVH_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_IRRMESH_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_IRR_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_Q3D_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_B3D_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_COLLADA_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_TERRAGEN_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_CSM_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_3D_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_LWS_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_OGRE_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_OPENGEX_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_MS3D_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_COB_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_BLEND_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_Q3BSP_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_NDO_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_IFC_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_XGL_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_ASSBIN_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_C4D_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_3MF_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_X3D_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_MMD_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_M3D_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_IQM_IMPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_X_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_STEP_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_STL_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_PLY_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_3DS_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_COLLADA_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_ASSBIN_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_ASSXML_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_X3D_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_M3D_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_3MF_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_ASSJSON_EXPORTER>
+  $<$<CONFIG:Debug>:ASSIMP_BUILD_NO_PBRT_EXPORTER>
+  $<$<CONFIG:Debug>:WIN32_LEAN_AND_MEAN>
+  $<$<CONFIG:Debug>:UNICODE>
+  $<$<CONFIG:Debug>:_UNICODE>
+)
+target_link_directories("assimp" PRIVATE
+)
+target_link_libraries("assimp"
+)
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  set_target_properties("assimp" PROPERTIES COMPILE_FLAGS "-finput-charset=UTF-8 ")
+endif()
+target_compile_options("assimp" PRIVATE
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-m64>
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-g>
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-m64>
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-g>
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-std=c++17>
+)
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  set_target_properties("assimp" PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO
+    POSITION_INDEPENDENT_CODE False
+    INTERPROCEDURAL_OPTIMIZATION False
+  )
+endif()
+if(CMAKE_BUILD_TYPE STREQUAL Release)
+  set_target_properties("assimp" PROPERTIES
+    OUTPUT_NAME "assimp"
+    ARCHIVE_OUTPUT_DIRECTORY "D:/dev/Rynex-Rendering/Rynex/vendor/assimp/bin/Release-windows-x86_64/assimp"
+    LIBRARY_OUTPUT_DIRECTORY "D:/dev/Rynex-Rendering/Rynex/vendor/assimp/bin/Release-windows-x86_64/assimp"
+    RUNTIME_OUTPUT_DIRECTORY "D:/dev/Rynex-Rendering/Rynex/vendor/assimp/bin/Release-windows-x86_64/assimp"
+  )
+endif()
+target_include_directories("assimp" PRIVATE
+  $<$<CONFIG:Release>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp>
+  $<$<CONFIG:Release>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/code>
+  $<$<CONFIG:Release>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/include>
+  $<$<CONFIG:Release>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib>
+  $<$<CONFIG:Release>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/zlib>
+  $<$<CONFIG:Release>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/unzip>
+  $<$<CONFIG:Release>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/pugixml/src>
+  $<$<CONFIG:Release>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/rapidjson/include>
+  $<$<CONFIG:Release>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/utf8cpp/source>
+)
+target_compile_definitions("assimp" PRIVATE
+  $<$<CONFIG:Release>:RY_PLATFORM_WINDOWS>
+  $<$<CONFIG:Release>:RAPIDJSON_HAS_STDSTRING=1>
+  $<$<CONFIG:Release>:RAPIDJSON_NOMEMBERITERATORCLASS>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_USD_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_X_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_AMF_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_3DS_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_MD3_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_MDL_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_MD2_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_PLY_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_ASE_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_HMP_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_SMD_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_MDC_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_MD5_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_STL_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_LWO_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_DXF_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_NFF_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_RAW_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_SIB_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_OFF_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_AC_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_BVH_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_IRRMESH_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_IRR_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_Q3D_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_B3D_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_COLLADA_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_TERRAGEN_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_CSM_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_3D_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_LWS_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_OGRE_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_OPENGEX_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_MS3D_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_COB_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_BLEND_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_Q3BSP_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_NDO_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_IFC_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_XGL_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_ASSBIN_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_C4D_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_3MF_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_X3D_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_MMD_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_M3D_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_IQM_IMPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_X_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_STEP_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_STL_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_PLY_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_3DS_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_COLLADA_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_ASSBIN_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_ASSXML_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_X3D_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_M3D_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_3MF_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_ASSJSON_EXPORTER>
+  $<$<CONFIG:Release>:ASSIMP_BUILD_NO_PBRT_EXPORTER>
+  $<$<CONFIG:Release>:WIN32_LEAN_AND_MEAN>
+  $<$<CONFIG:Release>:UNICODE>
+  $<$<CONFIG:Release>:_UNICODE>
+)
+target_link_directories("assimp" PRIVATE
+)
+target_link_libraries("assimp"
+)
+if(CMAKE_BUILD_TYPE STREQUAL Release)
+  set_target_properties("assimp" PROPERTIES COMPILE_FLAGS "-finput-charset=UTF-8 ")
+endif()
+target_compile_options("assimp" PRIVATE
+  $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C>>:-m64>
+  $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C>>:-O2>
+  $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:-m64>
+  $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:-O2>
+  $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:-std=c++17>
+)
+if(CMAKE_BUILD_TYPE STREQUAL Release)
+  set_target_properties("assimp" PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO
+    POSITION_INDEPENDENT_CODE False
+    INTERPROCEDURAL_OPTIMIZATION False
+  )
+endif()
+if(CMAKE_BUILD_TYPE STREQUAL Dist)
+  set_target_properties("assimp" PROPERTIES
+    OUTPUT_NAME "assimp"
+    ARCHIVE_OUTPUT_DIRECTORY "D:/dev/Rynex-Rendering/Rynex/vendor/assimp/bin/Dist-windows-x86_64/assimp"
+    LIBRARY_OUTPUT_DIRECTORY "D:/dev/Rynex-Rendering/Rynex/vendor/assimp/bin/Dist-windows-x86_64/assimp"
+    RUNTIME_OUTPUT_DIRECTORY "D:/dev/Rynex-Rendering/Rynex/vendor/assimp/bin/Dist-windows-x86_64/assimp"
+  )
+endif()
+target_include_directories("assimp" PRIVATE
+  $<$<CONFIG:Dist>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp>
+  $<$<CONFIG:Dist>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/code>
+  $<$<CONFIG:Dist>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/include>
+  $<$<CONFIG:Dist>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib>
+  $<$<CONFIG:Dist>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/zlib>
+  $<$<CONFIG:Dist>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/unzip>
+  $<$<CONFIG:Dist>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/pugixml/src>
+  $<$<CONFIG:Dist>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/rapidjson/include>
+  $<$<CONFIG:Dist>:D:/dev/Rynex-Rendering/Rynex/vendor/assimp/contrib/utf8cpp/source>
+)
+target_compile_definitions("assimp" PRIVATE
+  $<$<CONFIG:Dist>:RY_PLATFORM_WINDOWS>
+  $<$<CONFIG:Dist>:RAPIDJSON_HAS_STDSTRING=1>
+  $<$<CONFIG:Dist>:RAPIDJSON_NOMEMBERITERATORCLASS>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_USD_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_X_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_AMF_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_3DS_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_MD3_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_MDL_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_MD2_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_PLY_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_ASE_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_HMP_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_SMD_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_MDC_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_MD5_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_STL_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_LWO_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_DXF_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_NFF_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_RAW_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_SIB_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_OFF_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_AC_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_BVH_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_IRRMESH_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_IRR_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_Q3D_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_B3D_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_COLLADA_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_TERRAGEN_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_CSM_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_3D_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_LWS_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_OGRE_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_OPENGEX_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_MS3D_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_COB_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_BLEND_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_Q3BSP_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_NDO_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_IFC_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_XGL_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_ASSBIN_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_C4D_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_3MF_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_X3D_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_MMD_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_M3D_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_IQM_IMPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_X_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_STEP_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_STL_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_PLY_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_3DS_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_COLLADA_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_ASSBIN_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_ASSXML_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_X3D_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_M3D_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_3MF_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_ASSJSON_EXPORTER>
+  $<$<CONFIG:Dist>:ASSIMP_BUILD_NO_PBRT_EXPORTER>
+  $<$<CONFIG:Dist>:WIN32_LEAN_AND_MEAN>
+  $<$<CONFIG:Dist>:UNICODE>
+  $<$<CONFIG:Dist>:_UNICODE>
+)
+target_link_directories("assimp" PRIVATE
+)
+target_link_libraries("assimp"
+)
+if(CMAKE_BUILD_TYPE STREQUAL Dist)
+  set_target_properties("assimp" PROPERTIES COMPILE_FLAGS "-finput-charset=UTF-8 ")
+endif()
+target_compile_options("assimp" PRIVATE
+  $<$<AND:$<CONFIG:Dist>,$<COMPILE_LANGUAGE:C>>:-m64>
+  $<$<AND:$<CONFIG:Dist>,$<COMPILE_LANGUAGE:C>>:-O2>
+  $<$<AND:$<CONFIG:Dist>,$<COMPILE_LANGUAGE:CXX>>:-m64>
+  $<$<AND:$<CONFIG:Dist>,$<COMPILE_LANGUAGE:CXX>>:-O2>
+  $<$<AND:$<CONFIG:Dist>,$<COMPILE_LANGUAGE:CXX>>:-std=c++17>
+)
+if(CMAKE_BUILD_TYPE STREQUAL Dist)
+  set_target_properties("assimp" PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO
+    POSITION_INDEPENDENT_CODE False
+    INTERPROCEDURAL_OPTIMIZATION False
+  )
+endif()
